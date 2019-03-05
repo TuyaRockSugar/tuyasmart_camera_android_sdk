@@ -17,12 +17,26 @@ Tuya Smart Camera SDK provides the interface package for the communication with 
 
  **Using AndroidStudio integration(Version 3.1.3 or above is supported)**
 
-Add tuyaCamera-3.0.0.aar to libs and add the following line to your module build.gradle:
+- Add Maven address to the root directory build.gradle:
+```java
+allprojects {
+    repositories {
+        ...
+        maven {
+            url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
+        }
+    }
+}
+```
+- Add the following dependencies to the module build. gradle:
 
 ```java
-implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+dependencies {
+    ...
+    implementation "com.tuya.smart:tuyaCamera:3.0.5"
+    implementation 'com.tuya.smart:tuyasmart:2.9.3'
+}
 ```
-
 For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](https://developer.android.com/studio/)
 
 

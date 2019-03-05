@@ -17,10 +17,27 @@
 
 **使用 AndroidStudio (版本号 3.1.3及更高版本)**
 
-创建项目工程，添加 tuyaCamera-3.0.0.aar 到 libs文件夹， 在模块的build.gradle中添加如下代码:
+- 创建项目工程
+- 在根目录build.gradle添加maven地址：
+```java
+allprojects {
+    repositories {
+        ...
+        maven {
+            url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
+        }
+    }
+}
+```
+
+- 在模块的build.gradle中添加如下代码:
 
 ```java
-implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+dependencies {
+    ...
+    implementation "com.tuya.smart:tuyaCamera:3.0.5"
+    implementation 'com.tuya.smart:tuyasmart:2.9.3'
+}
 ```
 
 AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.android.com/studio/)
