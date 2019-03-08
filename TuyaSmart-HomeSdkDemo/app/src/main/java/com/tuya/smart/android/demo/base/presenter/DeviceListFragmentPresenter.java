@@ -21,7 +21,7 @@ import com.tuya.smart.android.demo.base.utils.DialogUtil;
 import com.tuya.smart.android.demo.base.utils.ProgressUtil;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
 import com.tuya.smart.android.demo.base.view.IDeviceListFragmentView;
-import com.tuya.smart.android.demo.camera.WelcomeActivity;
+import com.tuya.smart.android.demo.camera.CameraPanelActivity;
 import com.tuya.smart.android.demo.config.AddDeviceTypeActivity;
 import com.tuya.smart.android.demo.config.CommonConfig;
 import com.tuya.smart.android.demo.device.CommonDeviceDebugActivity;
@@ -126,8 +126,8 @@ public class DeviceListFragmentPresenter extends BasePresenter implements NetWor
     }
 
     private void gotoDeviceCommonActivity(DeviceBean devBean) {
-        if ("sp".equals(devBean.getProductBean().getCategory())){
-            Intent intent = new Intent(mActivity, WelcomeActivity.class);
+        if ("sp".equals(devBean.getProductBean().getCategory())) {
+            Intent intent = new Intent(mActivity, CameraPanelActivity.class);
             intent.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devBean.getDevId());
             intent.putExtra(CommonDeviceDebugPresenter.INTENT_LOCALKEY, devBean.getLocalKey());
             Map<String, Object> map = devBean.getSkills();
@@ -139,7 +139,7 @@ public class DeviceListFragmentPresenter extends BasePresenter implements NetWor
             }
             intent.putExtra(CommonDeviceDebugPresenter.INTENT_P2P_TYPE, p2pType);
             mActivity.startActivity(intent);
-        }else {
+        } else {
             Intent intent = new Intent(mActivity, CommonDeviceDebugActivity.class);
             intent.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devBean.getDevId());
             mActivity.startActivity(intent);

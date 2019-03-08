@@ -244,8 +244,12 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".config.QrCodeConfigActivity"></activity>
 
-        <activity android:name=".camera.MainActivity"/>
-        <activity android:name=".camera.WelcomeActivity"/>
+        <activity
+            android:name=".camera.CameraPanelActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".camera.CameraPlaybackActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
