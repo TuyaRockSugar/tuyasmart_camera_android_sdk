@@ -139,8 +139,9 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
                     public void onSuccess(Object o) {
                         infoBean = JSONObject.parseObject(o.toString(), CameraInfoBean.class);
                         Log.d("onSuccess", o.toString());
-                        p2pId = infoBean.getP2pId();
+                        p2pId = infoBean.getP2pId().split(",")[0];
                         p2pWd = infoBean.getPassword();
+                        mInitStr = infoBean.getP2pConfig().getInitStr();
                         initCameraView();
                     }
 
@@ -338,7 +339,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onMuteOperateSuccess(ICameraP2P.PLAYMODE playmode, int isMute) {
         isPreviewMute = isMute;
-        muteImg.setSelected(isPreviewMute == ICameraP2P.MUTE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                muteImg.setSelected(isPreviewMute == ICameraP2P.MUTE);
+            }
+        });
     }
 
     @Override
@@ -349,7 +355,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onDefinitionStatusCallback(boolean b, int i) {
         videoClarity = i;
-        qualityTv.setText(videoClarity == ICameraP2P.HD ? "HD" : "SD");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                qualityTv.setText(videoClarity == ICameraP2P.HD ? "HD" : "SD");
+            }
+        });
     }
 
     @Override
@@ -437,7 +448,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onSpeakSuccessCallback() {
         isSpeaking = true;
-        speakTxt.setSelected(true);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                speakTxt.setSelected(true);
+            }
+        });
     }
 
     @Override
@@ -448,7 +464,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onStopSpeakSuccessCallback() {
         isSpeaking = false;
-        speakTxt.setSelected(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                speakTxt.setSelected(false);
+            }
+        });
     }
 
     @Override
