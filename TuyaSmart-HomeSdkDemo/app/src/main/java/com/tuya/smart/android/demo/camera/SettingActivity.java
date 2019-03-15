@@ -223,20 +223,22 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 mTuyaCameraDevice.publishCameraDps(DpSDRecordModel.ID, RecordMode.EVENT.getDpValue());
             }
         } else if (R.id.btn_wireless_batterylock == v.getId()) {
-            boolean o = mTuyaCameraDevice.queryBooleanCameraDps(DpWirelessBatterylock.ID);
-            showQueryTxt.setText("local query result: " + o);
-            mTuyaCameraDevice.registorTuyaCameraDeviceControlCallback(DpWirelessBatterylock.ID, new ITuyaCameraDeviceControlCallback<Boolean>() {
-                @Override
-                public void onSuccess(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, Boolean o) {
-                    showPublishTxt.setText("LAN/Cloud query result: " + o);
-                }
+            if (mTuyaCameraDevice.isSupportCameraDps(DpWirelessBatterylock.ID)) {
+                boolean o = mTuyaCameraDevice.queryBooleanCameraDps(DpWirelessBatterylock.ID);
+                showQueryTxt.setText("local query result: " + o);
+                mTuyaCameraDevice.registorTuyaCameraDeviceControlCallback(DpWirelessBatterylock.ID, new ITuyaCameraDeviceControlCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, Boolean o) {
+                        showPublishTxt.setText("LAN/Cloud query result: " + o);
+                    }
 
-                @Override
-                public void onFailure(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, String s1, String s2) {
+                    @Override
+                    public void onFailure(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, String s1, String s2) {
 
-                }
-            });
-            mTuyaCameraDevice.publishCameraDps(DpWirelessBatterylock.ID, true);
+                    }
+                });
+                mTuyaCameraDevice.publishCameraDps(DpWirelessBatterylock.ID, true);
+            }
         } else if (R.id.btn_wireless_electricity == v.getId()) {
             int o = mTuyaCameraDevice.queryIntegerCurrentCameraDps(DpWirelessElectricity.ID);
             showQueryTxt.setText("local query result: " + o);
@@ -253,7 +255,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             });
             mTuyaCameraDevice.publishCameraDps(DpWirelessElectricity.ID, null);
         } else if (R.id.btn_wireless_lowpower == v.getId()) {
-            String o = mTuyaCameraDevice.queryStringCurrentCameraDps(DpWirelessLowpower.ID);
+            int o = mTuyaCameraDevice.queryIntegerCurrentCameraDps(DpWirelessLowpower.ID);
             showQueryTxt.setText("local query result: " + o);
             mTuyaCameraDevice.registorTuyaCameraDeviceControlCallback(DpWirelessLowpower.ID, new ITuyaCameraDeviceControlCallback<Integer>() {
                 @Override
