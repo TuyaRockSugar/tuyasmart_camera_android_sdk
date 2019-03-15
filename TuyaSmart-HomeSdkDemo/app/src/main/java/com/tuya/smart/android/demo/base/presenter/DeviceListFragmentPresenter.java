@@ -328,6 +328,7 @@ public class DeviceListFragmentPresenter extends BasePresenter implements NetWor
         }
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
         TuyaSdk.getEventBus().unregister(this);

@@ -1,6 +1,5 @@
 package com.tuya.smart.android.demo.camera;
 
-import android.graphics.Camera;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -270,7 +269,12 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
     @Override
     public void onMuteOperateSuccess(ICameraP2P.PLAYMODE playmode, int isMute) {
         isPlaybackMute = isMute;
-        muteImg.setSelected(isPlaybackMute == ICameraP2P.MUTE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                muteImg.setSelected(isPlaybackMute == ICameraP2P.MUTE);
+            }
+        });
     }
 
     @Override
@@ -340,7 +344,7 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
     @Override
     public void onQueryPlaybackDataSuccessByMonth(int i, int i1, Object o) {
         if (null == o) {
-            ToastUtil.shortToast(this, "No data for query date");
+            showErrorToast();
             return;
         }
         if (o instanceof List) {
@@ -358,13 +362,7 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
                 JSONArray jsonArray = jsonObject.getJSONArray("DataDays");
                 List<String> days = JSONArray.parseArray(jsonArray.toJSONString(), String.class);
                 if (days.size() == 0) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ToastUtil.shortToast(CameraPlaybackActivity.this, "No data for query date");
-                        }
-                    });
-
+                    showErrorToast();
                     return;
                 }
                 String queryDayStr;
@@ -376,12 +374,21 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
                 if (days.contains(queryDayStr)) {
                     camera.queryRecordTimeSliceByDay(i, i1, queryDay);
                 } else {
-                    ToastUtil.shortToast(this, "No data for query date");
+                    showErrorToast();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void showErrorToast() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.shortToast(CameraPlaybackActivity.this, "No data for query date");
+            }
+        });
     }
 
     @Override
@@ -392,7 +399,7 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
     @Override
     public void onQueryPlaybackDataSuccessByDay(String yearmonthday, Object timePieceBeanList) {
         if (null == timePieceBeanList) {
-            ToastUtil.shortToast(this, "No data for query date");
+            showErrorToast();
             return;
         }
         queryDateList.clear();
