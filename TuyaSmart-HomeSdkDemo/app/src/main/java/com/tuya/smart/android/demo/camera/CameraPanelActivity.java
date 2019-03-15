@@ -24,13 +24,15 @@ import com.tuya.smart.android.demo.camera.bean.CameraInfoBean;
 import com.tuya.smart.android.demo.utils.Constants;
 import com.tuya.smart.camera.middleware.ITuyaSmartCamera;
 import com.tuya.smart.camera.middleware.TuyaSmartCameraFactory;
-import com.tuya.smart.camera.middleware.utils.CRC32;
-import com.tuya.smart.camera.middleware.utils.IntToButeArray;
 import com.tuya.smart.camera.middleware.view.TuyaMonitorView;
 import com.tuya.smart.camera.tuyadeleagte.ICameraP2P;
 import com.tuya.smart.camera.tuyadeleagte.OnDelegateCameraListener;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
 import com.tuya.smart.sdk.api.IRequestCallback;
+import com.tuyasmart.camera.devicecontrol.ITuyaCameraDevice;
+import com.tuyasmart.camera.devicecontrol.TuyaCameraDeviceControlSDK;
+import com.tuyasmart.camera.devicecontrol.utils.CRC32;
+import com.tuyasmart.camera.devicecontrol.utils.IntToButeArray;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -51,7 +53,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     private TuyaMonitorView mVideoView;
     private ImageView muteImg;
     private TextView qualityTv;
-    private TextView speakTxt, recordTxt, photoTxt, replayTxt;
+    private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt;
 
     private ITuyaSmartCamera camera;
     private static final int ASPECT_RATIO_WIDTH = 9;
@@ -101,6 +103,8 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
         recordTxt = findViewById(R.id.record_Txt);
         photoTxt = findViewById(R.id.photo_Txt);
         replayTxt = findViewById(R.id.replay_Txt);
+        settingTxt = findViewById(R.id.setting_Txt);
+        settingTxt.setOnClickListener(this);
 
         //播放器view最好宽高比设置16:9
         WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
@@ -139,8 +143,9 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
                     public void onSuccess(Object o) {
                         infoBean = JSONObject.parseObject(o.toString(), CameraInfoBean.class);
                         Log.d("onSuccess", o.toString());
-                        p2pId = infoBean.getP2pId();
+                        p2pId = infoBean.getP2pId().split(",")[0];
                         p2pWd = infoBean.getPassword();
+                        mInitStr = infoBean.getP2pConfig().getInitStr();
                         initCameraView();
                     }
 
@@ -224,6 +229,11 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
                 intent.putExtra("p2pType", p2pType);
                 startActivity(intent);
                 break;
+            case R.id.setting_Txt:
+                Intent intent1 = new Intent(CameraPanelActivity.this, SettingActivity.class);
+                intent1.putExtra("devId", devId);
+                startActivity(intent1);
+                break;
             default:
                 break;
         }
@@ -273,11 +283,11 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onCreateDeviceSuccess() {
         if (isDoorbell) {
-            int crcsum = CRC32.getChecksum(localKey.getBytes());
-            String topicId = "m/w/" + devId;
-            byte[] bytes = IntToButeArray.intToByteArray(crcsum);
-            ITuyaHomeCamera homeCamera = TuyaHomeSdk.getCameraInstance();
-            homeCamera.publishWirelessWake(topicId, bytes);
+//            int crcsum = CRC32.getChecksum(localKey.getBytes());
+//            String topicId = "m/w/" + devId;
+//            byte[] bytes = IntToButeArray.intToByteArray(crcsum);
+            ITuyaCameraDevice homeCamera = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
+            homeCamera.wirelessWake(localKey, devId);
         }
         camera.connect(p2pId, p2pWd, localKey);
     }
@@ -338,7 +348,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onMuteOperateSuccess(ICameraP2P.PLAYMODE playmode, int isMute) {
         isPreviewMute = isMute;
-        muteImg.setSelected(isPreviewMute == ICameraP2P.MUTE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                muteImg.setSelected(isPreviewMute == ICameraP2P.MUTE);
+            }
+        });
     }
 
     @Override
@@ -349,7 +364,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onDefinitionStatusCallback(boolean b, int i) {
         videoClarity = i;
-        qualityTv.setText(videoClarity == ICameraP2P.HD ? "HD" : "SD");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                qualityTv.setText(videoClarity == ICameraP2P.HD ? "HD" : "SD");
+            }
+        });
     }
 
     @Override
@@ -437,7 +457,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onSpeakSuccessCallback() {
         isSpeaking = true;
-        speakTxt.setSelected(true);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                speakTxt.setSelected(true);
+            }
+        });
     }
 
     @Override
@@ -448,7 +473,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnDelegate
     @Override
     public void onStopSpeakSuccessCallback() {
         isSpeaking = false;
-        speakTxt.setSelected(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                speakTxt.setSelected(false);
+            }
+        });
     }
 
     @Override

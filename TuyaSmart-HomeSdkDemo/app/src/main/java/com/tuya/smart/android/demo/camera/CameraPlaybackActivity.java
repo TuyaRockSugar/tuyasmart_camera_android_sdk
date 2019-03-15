@@ -1,5 +1,6 @@
 package com.tuya.smart.android.demo.camera;
 
+import android.graphics.Camera;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -342,28 +343,44 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
             ToastUtil.shortToast(this, "No data for query date");
             return;
         }
-        //Dates with data for the query month
-        try {
-            JSONObject jsonObject = JSONObject.parseObject(o.toString());
-            JSONArray jsonArray = jsonObject.getJSONArray("DataDays");
-            List<String> days = JSONArray.parseArray(jsonArray.toJSONString(), String.class);
-            if (days.size() == 0) {
-                ToastUtil.shortToast(this, "No data for query date");
-                return;
-            }
-            String queryDayStr;
+        if (o instanceof List) {
+            String queryDayStr = "";
             if (queryDay < 10) {
                 queryDayStr = "0" + queryDay;
             } else {
                 queryDayStr = "" + queryDay;
             }
-            if (days.contains(queryDayStr)) {
-                camera.queryRecordTimeSliceByDay(i, i1, queryDay);
-            } else {
-                ToastUtil.shortToast(this, "No data for query date");
+            camera.queryRecordTimeSliceByDay(i, i1, Integer.parseInt(queryDayStr));
+        } else {
+            //Dates with data for the query month
+            try {
+                JSONObject jsonObject = JSONObject.parseObject(o.toString());
+                JSONArray jsonArray = jsonObject.getJSONArray("DataDays");
+                List<String> days = JSONArray.parseArray(jsonArray.toJSONString(), String.class);
+                if (days.size() == 0) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtil.shortToast(CameraPlaybackActivity.this, "No data for query date");
+                        }
+                    });
+
+                    return;
+                }
+                String queryDayStr;
+                if (queryDay < 10) {
+                    queryDayStr = "0" + queryDay;
+                } else {
+                    queryDayStr = "" + queryDay;
+                }
+                if (days.contains(queryDayStr)) {
+                    camera.queryRecordTimeSliceByDay(i, i1, queryDay);
+                } else {
+                    ToastUtil.shortToast(this, "No data for query date");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 

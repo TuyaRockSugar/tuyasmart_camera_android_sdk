@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tuya.smart.android.demo">
-
     <!-- sdcard -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
-        android:required="false" />
-    <!-- 网络 -->
+        android:required="false" /> <!-- 网络 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -21,8 +19,7 @@
         android:required="false" />
     <uses-permission
         android:name="android.permission.WAKE_LOCK"
-        android:required="false" />
-    <!-- added from 2.7.2 -->
+        android:required="false" /> <!-- added from 2.7.2 -->
     <uses-permission
         android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"
         android:required="false" />
@@ -35,6 +32,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
+        <activity android:name=".camera.SettingActivity"></activity>
+
         <meta-data
             android:name="TUYA_SMART_APPKEY"
             android:value="jratmcxskaa4kcnwerpm" />
@@ -242,8 +241,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Splash.Theme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name=".config.QrCodeConfigActivity"></activity>
-
+        <activity android:name=".config.QrCodeConfigActivity" />
         <activity
             android:name=".camera.CameraPanelActivity"
             android:screenOrientation="portrait" />

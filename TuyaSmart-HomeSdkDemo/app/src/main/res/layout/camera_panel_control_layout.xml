@@ -74,6 +74,11 @@
             android:textSize="@dimen/ts_13" />
 
         <TextView
+            android:id="@+id/setting_Txt"
+            android:text="setting"
+            android:gravity="center"
+            android:drawableTop="@drawable/camera_icon_arrow"
+            android:textColor="@color/camera_panel_control_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
