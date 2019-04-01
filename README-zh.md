@@ -35,7 +35,7 @@ allprojects {
 ```java
 dependencies {
     ...
-    implementation "com.tuya.smart:tuyaCamera:3.0.6"
+    implementation 'com.tuya.smart:tuyaCamera:3.0.6'
     implementation 'com.tuya.smart:tuyasmart:2.9.3'
 }
 ```
