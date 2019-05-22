@@ -35,7 +35,7 @@ allprojects {
 ```java
 dependencies {
     ...
-    implementation 'com.tuya.smart:tuyaCamera:3.0.6'
+    implementation 'com.tuya.smart:tuyaCamera:3.0.7'
     implementation 'com.tuya.smart:tuyasmart:2.9.3'
 }
 ```
@@ -47,4 +47,7 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 ## 开发文档
 
 更多请参考: [涂鸦智能摄像机 Android SDK使用说明](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/zh-hans/)
+
+## 更新日志
+- 修复本地录像没有声音
 
