@@ -33,7 +33,7 @@ allprojects {
 ```java
 dependencies {
     ...
-    implementation "com.tuya.smart:tuyaCamera:3.0.6"
+    implementation "com.tuya.smart:tuyaCamera:3.0.7"
     implementation 'com.tuya.smart:tuyasmart:2.9.3'
 }
 ```
@@ -44,3 +44,6 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 ## Doc
 
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
+
+## Update log
+- Repairing local videos without sound
