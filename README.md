@@ -46,4 +46,5 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
 
 ## Update log
-- Repairing local videos without sound
+- Fix the bug of local videos without sound
+- In 3.0.7h1, Fix the bug of calling destroy() directly to report NPL under the createDevice() that does not call SDK
