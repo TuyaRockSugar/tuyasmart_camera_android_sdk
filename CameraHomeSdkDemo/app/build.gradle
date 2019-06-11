@@ -79,7 +79,7 @@ dependencies {
     //
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     // tuya camera module
-    implementation "com.tuya.smart:tuyaCamera:3.0.7"
+    implementation "com.tuya.smart:tuyaCamera:3.0.8"
     implementation 'com.tuya.smart:tuyasmart:2.9.3'
 
 }
