@@ -48,6 +48,12 @@ public class MessageUtil {
         return msg;
     }
 
+    public static Message getMessage(int msgWhat,int arg1,Object msgObj){
+        Message msg = getMessage(msgWhat,msgObj);
+        msg.arg1 = arg1;
+        return msg;
+    }
+
     public static Message getResultMessage(int msgWhat, Object msgObj){
         Message msg = new Message();
         msg.what = msgWhat;

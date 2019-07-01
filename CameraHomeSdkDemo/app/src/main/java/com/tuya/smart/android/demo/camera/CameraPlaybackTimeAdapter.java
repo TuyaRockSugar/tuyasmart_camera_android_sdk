@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tuya.smart.android.demo.R;
-import com.tuya.smart.camera.tuyadeleagte.bean.TimePieceBean;
+import com.tuya.smart.android.demo.camera.bean.TimePieceBean;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

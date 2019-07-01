@@ -1,6 +1,8 @@
 package com.tuya.smart.android.demo.camera;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -8,46 +10,56 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.tuya.smart.android.demo.R;
+import com.tuya.smart.android.demo.base.utils.MessageUtil;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
-import com.tuya.smart.camera.middleware.ITuyaSmartCamera;
-import com.tuya.smart.camera.middleware.TuyaSmartCameraFactory;
-import com.tuya.smart.camera.middleware.view.TuyaMonitorView;
-import com.tuya.smart.camera.tuyadeleagte.ICameraP2P;
-import com.tuya.smart.camera.tuyadeleagte.OnDelegateCameraListener;
-import com.tuya.smart.camera.tuyadeleagte.bean.TimePieceBean;
+import com.tuya.smart.android.demo.camera.bean.RecordInfoBean;
+import com.tuya.smart.android.demo.camera.bean.TimePieceBean;
+import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
+import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
+import com.tuya.smart.camera.ipccamerasdk.bean.MonthDays;
+import com.tuya.smart.camera.ipccamerasdk.monitor.Monitor;
+import com.tuya.smart.camera.ipccamerasdk.p2p.ICameraP2P;
+import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
+import com.tuya.smart.camera.utils.AudioUtils;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.tuya.smart.android.demo.utils.Constants.ARG1_OPERATE_FAIL;
+import static com.tuya.smart.android.demo.utils.Constants.ARG1_OPERATE_SUCCESS;
+import static com.tuya.smart.android.demo.utils.Constants.MSG_DATA_DATE;
+import static com.tuya.smart.android.demo.utils.Constants.MSG_DATA_DATE_BY_DAY_FAIL;
+import static com.tuya.smart.android.demo.utils.Constants.MSG_DATA_DATE_BY_DAY_SUCC;
+import static com.tuya.smart.android.demo.utils.Constants.MSG_MUTE;
 
 
 /**
  * @author chenbj
  */
-public class CameraPlaybackActivity extends AppCompatActivity implements OnDelegateCameraListener, View.OnClickListener {
+public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCameraListener, View.OnClickListener {
 
     private static final String TAG = "CameraPlaybackActivity";
     private Toolbar toolbar;
-    private TuyaMonitorView mVideoView;
+    private Monitor mVideoView;
     private ImageView muteImg;
     private EditText dateInputEdt;
     private RecyclerView queryRv;
     private Button queryBtn, startBtn, pauseBtn, resumeBtn, stopBtn;
 
-    private ITuyaSmartCamera camera;
+    private ICameraP2P mCameraP2P;
     private static final int ASPECT_RATIO_WIDTH = 9;
     private static final int ASPECT_RATIO_HEIGHT = 16;
     private String p2pId = "", p2pWd = "", localKey = "", mInitStr = "EEGDFHBAKJINGGJKFAHAFKFIGINJGFMEHIEOAACPBFIDKMLKCMBPCLONHCKGJGKHBEMOLNCGPAMC", mP2pKey = "nVpkO1Xqbojgr4Ks";
@@ -57,9 +69,97 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
 
     private boolean isPlayback = false;
 
-    private int isPlaybackMute = ICameraP2P.MUTE;
+    protected Map<String, List<String>> mBackDataMonthCache;
+    protected Map<String, List<TimePieceBean>> mBackDataDayCache;
+    private int mPlaybackMute = ICameraP2P.MUTE;
     private boolean mIsRunSoft;
     private int p2pType;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_MUTE:
+                    handleMute(msg);
+                    break;
+                case MSG_DATA_DATE:
+                    handleDataDate(msg);
+                    break;
+                case MSG_DATA_DATE_BY_DAY_SUCC:
+                case MSG_DATA_DATE_BY_DAY_FAIL:
+                    handleDataDay(msg);
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    private void handleDataDay(Message msg) {
+        if (msg.arg1 == ARG1_OPERATE_SUCCESS) {
+            ;
+            queryDateList.clear();
+            //Timepieces with data for the query day
+            queryDateList.addAll((mBackDataDayCache.get(mCameraP2P.getDayKey())));
+            adapter.notifyDataSetChanged();
+        } else {
+
+        }
+    }
+
+    private void handleDataDate(Message msg) {
+        if (msg.arg1 == ARG1_OPERATE_SUCCESS) {
+            List<String> days = mBackDataMonthCache.get(mCameraP2P.getMonthKey());
+
+            try {
+                if (days.size() == 0) {
+                    showErrorToast();
+                    return;
+                }
+                String inputStr = dateInputEdt.getText().toString();
+                String[] substring = inputStr.split("/");
+                int year = Integer.parseInt(substring[0]);
+                int mouth = Integer.parseInt(substring[1]);
+                int day = Integer.parseInt(substring[2]);
+                mCameraP2P.queryRecordTimeSliceByDay(year, mouth, day, new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        parsePlaybackData(data);
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+                        mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+        }
+    }
+
+    private void parsePlaybackData(Object obj) {
+        RecordInfoBean recordInfoBean = JSONObject.parseObject(obj.toString(), RecordInfoBean.class);
+        if (recordInfoBean.getCount() != 0) {
+            List<TimePieceBean> timePieceBeanList = recordInfoBean.getItems();
+            if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
+                mBackDataDayCache.put(mCameraP2P.getDayKey(), timePieceBeanList);
+            }
+            mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_SUCC);
+        } else {
+            mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
+        }
+    }
+
+    private void handleMute(Message msg) {
+        if (msg.arg1 == ARG1_OPERATE_SUCCESS) {
+            muteImg.setSelected(mPlaybackMute == ICameraP2P.MUTE);
+        } else {
+            ToastUtil.shortToast(CameraPlaybackActivity.this, "operation fail");
+        }
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,12 +199,14 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
     }
 
     private void initData() {
+        mBackDataMonthCache = new HashMap<>();
+        mBackDataDayCache = new HashMap<>();
         mIsRunSoft = getIntent().getBooleanExtra("isRunsoft", false);
         p2pId = getIntent().getStringExtra("p2pId");
         p2pWd = getIntent().getStringExtra("p2pWd");
         localKey = getIntent().getStringExtra("localKey");
         p2pType = getIntent().getIntExtra("p2pType", 1);
-        mVideoView.createVideoView(p2pType, mIsRunSoft);
+//        mVideoView.createVideoView(p2pType, mIsRunSoft);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         queryRv.setLayoutManager(mLayoutManager);
@@ -114,14 +216,11 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
         queryRv.setAdapter(adapter);
 
         //there is no need to reconnect（createDevice） with a single column object（Of course，you can create it again）
-        camera = TuyaSmartCameraFactory.generateTuyaSmartCamera(p2pType);
-        camera.registorOnDelegateCameraListener(this);
-        camera.generateCameraView(mVideoView.createdView());
-//        camera.createDevice(p2pId, mInitStr, mP2pKey, mIsRunSoft);
-        camera.connectPlayback();
+        mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(p2pType);
+        mCameraP2P.connectPlayback();
 
         muteImg.setSelected(true);
-        dateInputEdt.setText("2019/3/4");
+        dateInputEdt.setText("2019/6/29");
     }
 
     private void initListener() {
@@ -134,13 +233,30 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
         adapter.setListener(new CameraPlaybackTimeAdapter.OnTimeItemListener() {
             @Override
             public void onClick(TimePieceBean timePieceBean) {
-                if (null != timePieceBean) {
-                    if (isPlayback) {
-                        camera.stopPlayBack();
-                        isPlayback = false;
-                    }
-                    camera.startPlayBack(timePieceBean.getStartTime(), timePieceBean.getEndTime(), timePieceBean.getStartTime());
-                }
+
+                mCameraP2P.startPlayBack(timePieceBean.getStartTime(),
+                        timePieceBean.getEndTime(),
+                        timePieceBean.getStartTime(), new OperationDelegateCallBack() {
+                            @Override
+                            public void onSuccess(int sessionId, int requestId, String data) {
+                                isPlayback = true;
+                            }
+
+                            @Override
+                            public void onFailure(int sessionId, int requestId, int errCode) {
+                                isPlayback = false;
+                            }
+                        }, new OperationDelegateCallBack() {
+                            @Override
+                            public void onSuccess(int sessionId, int requestId, String data) {
+                                isPlayback = false;
+                            }
+
+                            @Override
+                            public void onFailure(int sessionId, int requestId, int errCode) {
+                                isPlayback = false;
+                            }
+                        });
             }
         });
     }
@@ -149,238 +265,181 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.camera_mute:
-                int mute = isPlaybackMute == ICameraP2P.MUTE ? ICameraP2P.UNMUTE : ICameraP2P.MUTE;
-                camera.setMute(ICameraP2P.PLAYMODE.PLAYBACK, mute, CameraPlaybackActivity.this);
+                muteClick();
                 break;
             case R.id.query_btn:
-                String inputStr = dateInputEdt.getText().toString();
-                if (TextUtils.isEmpty(inputStr)) {
-                    return;
-                }
-                if (inputStr.contains("/")) {
-                    String[] substring = inputStr.split("/");
-                    if (substring.length > 2) {
-                        try {
-                            int year = Integer.parseInt(substring[0]);
-                            int mouth = Integer.parseInt(substring[1]);
-                            queryDay = Integer.parseInt(substring[2]);
-                            camera.queryRecordDaysByMonth(year, mouth);
-                        } catch (Exception e) {
-                            ToastUtil.shortToast(CameraPlaybackActivity.this, "Input Error");
-                        }
-                    }
-                }
+                queryDayByMonthClick();
                 break;
             case R.id.start_btn:
-                if (isPlayback) {
-                    camera.stopPlayBack();
-                    isPlayback = false;
-                    return;
-                }
-                if (null != queryDateList && queryDateList.size() > 0) {
-                    TimePieceBean timePieceBean = queryDateList.get(0);
-                    if (null != timePieceBean) {
-                        camera.startPlayBack(timePieceBean.getStartTime(), timePieceBean.getEndTime(), timePieceBean.getStartTime());
-                    }
-                } else {
-                    ToastUtil.shortToast(this, "No data for query date");
-                }
+                startPlayback();
                 break;
             case R.id.pause_btn:
-                camera.pausePlayBack();
+                pauseClick();
                 break;
             case R.id.resume_btn:
-                camera.resumePlayBack();
+                resumeClick();
                 break;
             case R.id.stop_btn:
-                camera.stopPlayBack();
-                isPlayback = false;
+                stopClick();
+
                 break;
             default:
                 break;
         }
     }
 
+    private void startPlayback() {
+        if (null != queryDateList && queryDateList.size() > 0) {
+            TimePieceBean timePieceBean = queryDateList.get(0);
+            if (null != timePieceBean) {
+                mCameraP2P.startPlayBack(timePieceBean.getStartTime(), timePieceBean.getEndTime(), timePieceBean.getStartTime(), new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        isPlayback = true;
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+
+                    }
+                }, new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        isPlayback = false;
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+
+                    }
+                });
+            }
+        } else {
+            ToastUtil.shortToast(this, "No data for query date");
+        }
+    }
+
+    private void stopClick() {
+        mCameraP2P.stopPlayBack(new OperationDelegateCallBack() {
+            @Override
+            public void onSuccess(int sessionId, int requestId, String data) {
+
+            }
+
+            @Override
+            public void onFailure(int sessionId, int requestId, int errCode) {
+
+            }
+        });
+        isPlayback = false;
+    }
+
+    private void resumeClick() {
+        mCameraP2P.resumePlayBack(new OperationDelegateCallBack() {
+            @Override
+            public void onSuccess(int sessionId, int requestId, String data) {
+                isPlayback = true;
+            }
+
+            @Override
+            public void onFailure(int sessionId, int requestId, int errCode) {
+
+            }
+        });
+    }
+
+    private void pauseClick() {
+        mCameraP2P.pausePlayBack(new OperationDelegateCallBack() {
+            @Override
+            public void onSuccess(int sessionId, int requestId, String data) {
+                isPlayback = false;
+            }
+
+            @Override
+            public void onFailure(int sessionId, int requestId, int errCode) {
+
+            }
+        });
+    }
+
+    private void queryDayByMonthClick() {
+        String inputStr = dateInputEdt.getText().toString();
+        if (TextUtils.isEmpty(inputStr)) {
+            return;
+        }
+        if (inputStr.contains("/")) {
+            String[] substring = inputStr.split("/");
+            if (substring.length > 2) {
+                try {
+                    int year = Integer.parseInt(substring[0]);
+                    int mouth = Integer.parseInt(substring[1]);
+                    queryDay = Integer.parseInt(substring[2]);
+                    mCameraP2P.queryRecordDaysByMonth(year, mouth, new OperationDelegateCallBack() {
+                        @Override
+                        public void onSuccess(int sessionId, int requestId, String data) {
+                            MonthDays monthDays = JSONObject.parseObject(data, MonthDays.class);
+                            mBackDataMonthCache.put(mCameraP2P.getMonthKey(), monthDays.getDataDays());
+                            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE, ARG1_OPERATE_SUCCESS, data));
+                        }
+
+                        @Override
+                        public void onFailure(int sessionId, int requestId, int errCode) {
+                            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE, ARG1_OPERATE_FAIL));
+                        }
+                    });
+                } catch (Exception e) {
+                    ToastUtil.shortToast(CameraPlaybackActivity.this, "Input Error");
+                }
+            }
+        }
+    }
+
+    private void muteClick() {
+        int mute;
+        mute = mPlaybackMute == ICameraP2P.MUTE ? ICameraP2P.UNMUTE : ICameraP2P.MUTE;
+        mCameraP2P.setMute(ICameraP2P.PLAYMODE.PLAYBACK, mute, new OperationDelegateCallBack() {
+            @Override
+            public void onSuccess(int sessionId, int requestId, String data) {
+                mPlaybackMute = Integer.valueOf(data);
+                mHandler.sendMessage(MessageUtil.getMessage(MSG_MUTE, ARG1_OPERATE_SUCCESS));
+            }
+
+            @Override
+            public void onFailure(int sessionId, int requestId, int errCode) {
+                mHandler.sendMessage(MessageUtil.getMessage(MSG_MUTE, ARG1_OPERATE_FAIL));
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mVideoView.onResume();
+        if (null != mCameraP2P) {
+            AudioUtils.getModel(this);
+            mCameraP2P.registorOnP2PCameraListener(this);
+            mCameraP2P.generateCameraView(mVideoView);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mVideoView.onPause();
         if (isPlayback) {
-            camera.stopPlayBack();
+            mCameraP2P.stopPlayBack(null);
         }
-    }
-
-    @Override
-    public void onCreateDeviceSuccess() {
-//        camera.connect(p2pId, p2pWd, localKey);
-//        camera.connectPlayback();
-    }
-
-    @Override
-    public void onCreateDeviceFail(int i) {
-        Log.d(TAG, "onCreateDeviceFail ret" + i);
-    }
-
-    @Override
-    public void connectFail(final String errorCode, String s1) {
-        Log.d(TAG, "connectFail errorCode" + errorCode);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(CameraPlaybackActivity.this, "connectFail " + errorCode, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    public void onChannel0StartSuccess() {
-    }
-
-    @Deprecated
-    @Override
-    public void onChannel1StartSuccess() {
-    }
-
-    @Deprecated
-    @Override
-    public void onChannelOtherStatus(int errorCode) {
-        Log.d(TAG, "onChannelOtherStatus errorCode " + errorCode);
-    }
-
-    @Override
-    public void onPreviewSuccess() {
-
-    }
-
-    @Override
-    public void onPreviewFail(int i) {
-
-    }
-
-    @Override
-    public void onStopPreviewSuccess() {
-
-    }
-
-    @Override
-    public void onStopPreviewFail() {
-
-    }
-
-    @Override
-    public void onMuteOperateSuccess(ICameraP2P.PLAYMODE playmode, int isMute) {
-        isPlaybackMute = isMute;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                muteImg.setSelected(isPlaybackMute == ICameraP2P.MUTE);
-            }
-        });
-    }
-
-    @Override
-    public void onMuteOperateFail(ICameraP2P.PLAYMODE playmode) {
-
-    }
-
-    @Override
-    public void onDefinitionStatusCallback(boolean b, int i) {
-    }
-
-    @Override
-    public void onSnapshotSuccessCallback() {
-        Log.d(TAG, "onSnapshotSuccessCallback");
-    }
-
-    @Override
-    public void onSnapshotFailCallback() {
-        Log.d(TAG, "onSnapshotFailCallback");
-    }
-
-    @Override
-    public void onPlaybackEnterFail(String s, String s1) {
-
-    }
-
-    @Override
-    public void onPlaybackStartSuccess() {
-        isPlayback = true;
-    }
-
-    @Override
-    public void onPlaybackStartFail(String s, String s1) {
-        isPlayback = false;
-    }
-
-    @Override
-    public void onPlaybackPauseSuccess() {
-
-    }
-
-    @Override
-    public void onPlaybackPauseFail(String s, String s1) {
-
-    }
-
-    @Override
-    public void onPlaybackResumeSuccess() {
-
-    }
-
-    @Override
-    public void onPlaybackResumeFail(String s, String s1) {
-
-    }
-
-    @Override
-    public void onPlaybackEnd() {
-        isPlayback = false;
-    }
-
-    @Override
-    public void onPlaybackEndFail() {
-
-    }
-
-    @Override
-    public void onQueryPlaybackDataSuccessByMonth(int i, int i1, Object o) {
-        if (null == o) {
-            showErrorToast();
-            return;
+        if (null != mCameraP2P) {
+            mCameraP2P.removeOnP2PCameraListener();
         }
-        if (o instanceof List) {
-            String queryDayStr = "";
-            if (queryDay < 10) {
-                queryDayStr = "0" + queryDay;
-            } else {
-                queryDayStr = "" + queryDay;
-            }
-            camera.queryRecordTimeSliceByDay(i, i1, Integer.parseInt(queryDayStr));
-        } else {
-            //Dates with data for the query month
-            try {
-                JSONObject jsonObject = JSONObject.parseObject(o.toString());
-                JSONArray jsonArray = jsonObject.getJSONArray("DataDays");
-                List<String> days = JSONArray.parseArray(jsonArray.toJSONString(), String.class);
-                if (days.size() == 0) {
-                    showErrorToast();
-                    return;
-                }
-                String queryDayStr;
-                if (queryDay < 10) {
-                    queryDayStr = "0" + queryDay;
-                } else {
-                    queryDayStr = "" + queryDay;
-                }
-                if (days.contains(queryDayStr)) {
-                    camera.queryRecordTimeSliceByDay(i, i1, queryDay);
-                } else {
-                    showErrorToast();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+        AudioUtils.changeToNomal(this);
     }
+
 
     private void showErrorToast() {
         runOnUiThread(new Runnable() {
@@ -392,63 +451,13 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnDeleg
     }
 
     @Override
-    public void onQueryPlaybackDataFailureByMonth(int i, String s) {
-        Log.d(TAG, "onQueryPlaybackDataFailureByMonth errorCode " + i);
-    }
-
-    @Override
-    public void onQueryPlaybackDataSuccessByDay(String yearmonthday, Object timePieceBeanList) {
-        if (null == timePieceBeanList) {
-            showErrorToast();
-            return;
-        }
-        queryDateList.clear();
-        //Timepieces with data for the query day
-        queryDateList.addAll((List<TimePieceBean>) timePieceBeanList);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    @Override
-    public void onQueryPlaybackDataFailureByDay(int i, String s) {
-
-    }
-
-    @Override
-    public void onreceiveFrameDataCallback() {
-
-    }
-
-    @Override
-    public void onSpeakSuccessCallback() {
-    }
-
-    @Override
-    public void onSpeakFailueCallback(int i) {
-
-    }
-
-    @Override
-    public void onStopSpeakSuccessCallback() {
-    }
-
-    @Override
-    public void onStopSpeakFailueCallback(int i) {
-
-    }
-
-    @Override
     public void receiveFrameDataForMediaCodec(int i, byte[] bytes, int i1, int i2, byte[] bytes1, boolean b, int i3) {
 
     }
 
     @Override
-    public void onReceiveFrameYUVData(int sessionId, ByteBuffer y, ByteBuffer u, ByteBuffer v, int width, int height, long timestamp, Object camera) {
-        mVideoView.receiveFrameYUVData(sessionId, y, u, v, width, height, camera);
+    public void onReceiveFrameYUVData(int sessionId, ByteBuffer y, ByteBuffer u, ByteBuffer v, int width, int height, int nFrameRate, int nIsKeyFrame, long timestamp, long nProgress, long nDuration, Object camera) {
+        mVideoView.receiveFrameYUVData(y, u, v, width, height);
     }
 
     @Override

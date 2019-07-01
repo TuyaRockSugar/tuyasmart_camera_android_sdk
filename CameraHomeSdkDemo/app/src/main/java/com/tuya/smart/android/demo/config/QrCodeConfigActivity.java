@@ -3,7 +3,11 @@ package com.tuya.smart.android.demo.config;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tuya.smart.android.common.utils.WiFiUtil;
@@ -24,12 +28,28 @@ public class QrCodeConfigActivity extends AppCompatActivity implements ITuyaSmar
     private String token = "";
     private String wifiPwd = "Tuya.140616";
     private ImageView mIvQr;
+    private LinearLayout mLlInputWifi;
+    private EditText mEtInputWifiSSid;
+    private EditText mEtInputWifiPwd;
+    private Button mBtnSave;
+
+
     private ITuyaCameraDevActivator mTuyaActivator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code_config);
+        mLlInputWifi = findViewById(R.id.ll_input_wifi);
+        mEtInputWifiSSid = findViewById(R.id.et_wifi_ssid);
+        mEtInputWifiPwd = findViewById(R.id.et_wifi_pwd);
+        mBtnSave = findViewById(R.id.btn_save);
+        mBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createQrcode();
+            }
+        });
         mIvQr = findViewById(R.id.iv_qrcode);
         init();
     }
@@ -40,7 +60,6 @@ public class QrCodeConfigActivity extends AppCompatActivity implements ITuyaSmar
             @Override
             public void onSuccess(String s) {
                 token = s;
-                createQrcode();
             }
 
             @Override
@@ -48,9 +67,11 @@ public class QrCodeConfigActivity extends AppCompatActivity implements ITuyaSmar
 
             }
         });
+        mEtInputWifiSSid.setText(wifiSSId);
     }
 
     private void createQrcode() {
+        wifiPwd = mEtInputWifiPwd.getText().toString();
         TuyaCameraActivatorBuilder builder = new TuyaCameraActivatorBuilder()
                 .setToken(token).setPassword(wifiPwd).setSsid(wifiSSId).setListener(this);
         mTuyaActivator = TuyaHomeSdk.getActivatorInstance().newCameraDevActivator(builder);
@@ -66,6 +87,8 @@ public class QrCodeConfigActivity extends AppCompatActivity implements ITuyaSmar
             @Override
             public void run() {
                 mIvQr.setImageBitmap(bitmap);
+                mIvQr.setVisibility(View.VISIBLE);
+                mLlInputWifi.setVisibility(View.GONE);
             }
         });
     }
@@ -83,7 +106,9 @@ public class QrCodeConfigActivity extends AppCompatActivity implements ITuyaSmar
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mTuyaActivator.stop();
-        mTuyaActivator.onDestroy();
+        if (null != mTuyaActivator) {
+            mTuyaActivator.stop();
+            mTuyaActivator.onDestroy();
+        }
     }
 }

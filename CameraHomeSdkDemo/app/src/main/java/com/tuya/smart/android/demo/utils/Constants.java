@@ -25,6 +25,30 @@ public class Constants {
     public static final int EXTERNAL_STORAGE_REQ_CODE = 10;
     public static final int EXTERNAL_AUDIO_REQ_CODE = 11;
 
+    public static final int ARG1_OPERATE_SUCCESS = 0;
+    public static final int ARG1_OPERATE_FAIL = 1;
+
+    public static final int MSG_CONNECT = 2033;
+    public static final int MSG_CREATE_DEVICE = 2099;
+    public static final int MSG_GET_CLARITY = 2054;
+
+    public static final int MSG_TALK_BACK_FAIL = 2021;
+    public static final int MSG_TALK_BACK_BEGIN = 2022;
+    public static final int MSG_TALK_BACK_OVER = 2023;
+    public static final int MSG_DATA_DATE = 2035;
+
+    //静音
+    public static final int MSG_MUTE = 2024;
+    public static final int MSG_SCREENSHOT = 2017;
+
+    public static final int MSG_VIDEO_RECORD_FAIL = 2018;
+    public static final int MSG_VIDEO_RECORD_BEGIN = 2019;
+    public static final int MSG_VIDEO_RECORD_OVER = 2020;
+
+
+    public static final int MSG_DATA_DATE_BY_DAY_SUCC = 2045;
+    public static final int MSG_DATA_DATE_BY_DAY_FAIL = 2046;
+
     public synchronized static boolean hasStoragePermission() {
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "a.log";
         try {

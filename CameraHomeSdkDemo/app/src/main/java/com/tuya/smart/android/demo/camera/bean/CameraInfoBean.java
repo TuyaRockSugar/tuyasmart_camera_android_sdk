@@ -1,5 +1,7 @@
 package com.tuya.smart.android.demo.camera.bean;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 
 /**
@@ -7,12 +9,26 @@ import java.util.List;
  */
 
 public class CameraInfoBean {
+    private static final String VIDEO_NUM = "video_num";   // 1: 1路码流，2及>2代表多路码流
+    private String id;
     private String password;
     private String p2pId;
+    private int p2pSpecifiedType;
     private P2pConfig p2pConfig;
-    private AudioAttributes audioAttributes;  // -----对讲模式  1---单工  2---双工 ; -----硬件能力  1---拾音器  2---扬声器
+    private AudioAttributes audioAttributes;
+    private String skill;
+    //码流数
+    private int videoNum;
 
     public CameraInfoBean() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPassword() {
@@ -31,6 +47,32 @@ public class CameraInfoBean {
         this.p2pId = p2pId;
     }
 
+
+    public int getP2pSpecifiedType() {
+        return p2pSpecifiedType;
+    }
+
+    public void setP2pSpecifiedType(int p2pSpecifiedType) {
+        this.p2pSpecifiedType = p2pSpecifiedType;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
+
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
+
+    public int getVideoNum() {
+        JSONObject object = JSONObject.parseObject(skill);
+        if (null != object) {
+            return object.getIntValue(VIDEO_NUM);
+        } else {
+            return -1;
+        }
+    }
+
     public P2pConfig getP2pConfig() {
         return p2pConfig;
     }
@@ -47,9 +89,10 @@ public class CameraInfoBean {
         this.p2pConfig = p2pConfig;
     }
 
-    public static  class P2pConfig{
+    public static class P2pConfig {
         String initStr;
         String p2pKey;
+        List<Object> ices;
 
         public String getInitStr() {
             return initStr;
@@ -66,10 +109,18 @@ public class CameraInfoBean {
         public void setP2pKey(String p2pKey) {
             this.p2pKey = p2pKey;
         }
+
+        public List<Object> getIces() {
+            return ices;
+        }
+
+        public void setIces(List<Object> ices) {
+            this.ices = ices;
+        }
     }
 
 
-    public static class AudioAttributes{
+    public static class AudioAttributes {
         List<Integer> callMode;
         List<Integer> hardwareCapability;
 

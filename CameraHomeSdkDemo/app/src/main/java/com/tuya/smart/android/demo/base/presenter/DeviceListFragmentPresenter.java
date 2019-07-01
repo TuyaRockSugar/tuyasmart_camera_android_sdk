@@ -137,7 +137,7 @@ public class DeviceListFragmentPresenter extends BasePresenter implements NetWor
             } else {
                 p2pType = (Integer) (map.get("p2pType"));
             }
-            intent.putExtra(CommonDeviceDebugPresenter.INTENT_P2P_TYPE, p2pType);
+            intent.putExtra(CommonDeviceDebugPresenter.INTENT_SDK_POROVIDER, p2pType);
             mActivity.startActivity(intent);
         } else {
             Intent intent = new Intent(mActivity, CommonDeviceDebugActivity.class);
