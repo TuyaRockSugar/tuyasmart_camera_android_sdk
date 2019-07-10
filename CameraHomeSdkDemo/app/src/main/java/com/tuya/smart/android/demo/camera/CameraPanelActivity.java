@@ -624,7 +624,6 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
 
     @Override
     public void onReceiveFrameYUVData(int sessionId, ByteBuffer y, ByteBuffer u, ByteBuffer v, int width, int height, int nFrameRate, int nIsKeyFrame, long timestamp, long nProgress, long nDuration, Object camera) {
-//        mVideoView.receiveFrameYUVData(y, u, v, width, height);
     }
 
 
