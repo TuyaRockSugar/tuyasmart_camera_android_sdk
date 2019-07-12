@@ -229,7 +229,6 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         settingTxt = findViewById(R.id.setting_Txt);
         settingTxt.setOnClickListener(this);
 
-        //播放器view最好宽高比设置16:9
         WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
         int width = windowManager.getDefaultDisplay().getWidth();
         int height = width * ASPECT_RATIO_WIDTH / ASPECT_RATIO_HEIGHT;
