@@ -35,8 +35,17 @@ allprojects {
 ```java
 dependencies {
     ...
-    implementation 'com.tuya.smart:tuyaCamera:3.0.8'
-    implementation 'com.tuya.smart:tuyasmart:2.9.3'
+    // tuya camera module
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.0r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.11.0r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
+
+    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.11.0r119'
+
+    //not required Compatible with older versions
+    implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
+
+    implementation 'com.tuya.smart:tuyasmart:3.9.6'
 }
 ```
 
