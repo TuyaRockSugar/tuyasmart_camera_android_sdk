@@ -56,4 +56,10 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
 
 ## Update log
-- support arm64
+- 2019.7.13
+  - New SDK code API have changed.
+  - To be compatible with the old version of sdk, use tuyaCamera: 3.11.0r119h2.
+  - Suggestions for old API to upgrade New API
+
+- 2019.6.11
+  - Support arm64
