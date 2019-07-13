@@ -17,10 +17,36 @@
 
 **使用 AndroidStudio (版本号 3.1.3及更高版本)**
 
-创建项目工程，添加 tuyaCamera-3.0.0.aar 到 libs文件夹， 在模块的build.gradle中添加如下代码:
+- 创建项目工程
+- 在根目录build.gradle添加maven地址：
+```java
+allprojects {
+    repositories {
+        ...
+        maven {
+            url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
+        }
+    }
+}
+```
+
+- 在模块的build.gradle中添加如下代码:
 
 ```java
-implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+dependencies {
+    ...
+    // tuya camera module
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.0r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.11.0r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
+
+    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.11.0r119'
+
+    //not required Compatible with older versions
+    implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
+
+    implementation 'com.tuya.smart:tuyasmart:3.9.6'
+}
 ```
 
 AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.android.com/studio/)
@@ -30,4 +56,7 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 ## 开发文档
 
 更多请参考: [涂鸦智能摄像机 Android SDK使用说明](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/zh-hans/)
+
+## 更新日志
+- 支持arm64
 
