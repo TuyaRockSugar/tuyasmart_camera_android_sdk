@@ -61,5 +61,8 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 更多请参考: [涂鸦智能摄像机 Android SDK使用说明](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/zh-hans/)
 
 ## 更新日志
-- 支持arm64
+- 2019.7.13
+    -  新的sdk代码重构，接口方法有变更，为了兼容老版本sdk请使用tuyaCamera:3.11.0r119h2。建议老用户向上升级
+- 2019.6.11
+    - 支持arm64
 
