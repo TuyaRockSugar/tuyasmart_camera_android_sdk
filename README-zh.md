@@ -19,7 +19,9 @@
 
 - 创建项目工程
 - 在根目录build.gradle添加maven地址：
+
 ```java
+
 allprojects {
     repositories {
         ...
@@ -28,6 +30,7 @@ allprojects {
         }
     }
 }
+
 ```
 
 - 在模块的build.gradle中添加如下代码:
