@@ -24,9 +24,6 @@ allprojects {
         jcenter() { url 'http://jcenter.bintray.com/' }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven {
-            url "https://maven.tuya-inc.top/nexus/content/repositories/snapshots"
-        }
-        maven {
             url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
         }
     }
