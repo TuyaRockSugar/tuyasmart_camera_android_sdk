@@ -12,17 +12,46 @@ Tuya Smart Camera SDK provides the interface package for the communication with 
 - Play back recorded video of the remote camera
 - Record video
 - Talk to the remote camera
+- Add Cloud storage module
 
 ## Rapid Integration
 
  **Using AndroidStudio integration(Version 3.1.3 or above is supported)**
 
-Add tuyaCamera-3.0.0.aar to libs and add the following line to your module build.gradle:
+add the following line to your project build.gradle:
 
-```java
-implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+```gradle
+  allprojects {
+    repositories {
+        ...
+        maven {
+            url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
+        }
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
+add the following line to your module build.gradle:
 
+```gradle
+dependencies {
+    ...
+    // tuya camera module
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.11.0r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
+
+    implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'
+    implementation 'com.github.wendux:DSBridge-Android:3.0-SNAPSHOT'
+    
+    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.11.0r119'
+
+    //not required Compatible with older versions
+    implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
+
+    implementation 'com.tuya.smart:tuyasmart:3.9.6'
+}
+```
 For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](https://developer.android.com/studio/)
 
 
@@ -30,3 +59,14 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 ## Doc
 
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
+
+## Update log
+- 2019.8.1
+  - Add cloud storage module
+- 2019.7.13
+  - New SDK code API have changed.
+  - To be compatible with the old version of sdk, use tuyaCamera: 3.11.0r119h2.
+  - Suggestions for old API to upgrade New API
+
+- 2019.6.11
+  - Support arm64

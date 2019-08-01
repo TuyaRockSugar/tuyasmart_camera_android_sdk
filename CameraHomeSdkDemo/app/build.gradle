@@ -47,7 +47,6 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-    mavenCentral()
 }
 
 dependencies {
@@ -83,12 +82,9 @@ dependencies {
     //
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.0r119'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.11.0r119'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
-
-    implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'
-    implementation 'com.github.wendux:DSBridge-Android:3.0-SNAPSHOT'
 
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.11.0r119'
 
@@ -96,4 +92,5 @@ dependencies {
     implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
 
     implementation 'com.tuya.smart:tuyasmart:3.9.6'
+
 }
