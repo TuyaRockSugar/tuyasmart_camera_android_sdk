@@ -12,6 +12,7 @@
 - 播放摄像头SD卡中录制的视频。
 - 手机端录制摄像头采集的图像。
 - 与摄像头设备通话。
+- 开放云存储功能
 
 ## 快速集成
 
@@ -26,6 +27,7 @@ allprojects {
         maven {
             url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
         }
+         maven { url 'https://jitpack.io' }
     }
 }
 ```
@@ -36,9 +38,12 @@ allprojects {
 dependencies {
     ...
     // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.0r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.11.0r119'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
+    
+    implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'
+    implementation 'com.github.wendux:DSBridge-Android:3.0-SNAPSHOT'
 
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.11.0r119'
 
@@ -59,4 +64,5 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 
 ## 更新日志
 - 支持arm64
+- 支持云存储
 
