@@ -69,7 +69,6 @@ public class DeviceListFragment extends BaseFragment implements IDeviceListFragm
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initPresenter();
-//        L.d(TAG,"tuyaTime: "+ TuyaUtil.formatDate(System.currentTimeMillis(),"yyyy-mm-dd hh:mm:ss"));
         mDeviceListFragmentPresenter.getDataFromServer();
     }
 
@@ -142,8 +141,8 @@ public class DeviceListFragment extends BaseFragment implements IDeviceListFragm
         //setTitle(getCurrentHome(R.string.home_my_device));
         SwitchFamilyText switchFamilyText = new SwitchFamilyText(getContext());
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-        getToolBar().addView(switchFamilyText,layoutParams);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        getToolBar().addView(switchFamilyText, layoutParams);
 
         setMenu(R.menu.toolbar_add_device, new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -161,6 +160,7 @@ public class DeviceListFragment extends BaseFragment implements IDeviceListFragm
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    @Override
     public void showNetWorkTipView(int tipRes) {
         mNetWorkTip.setText(tipRes);
         if (mNetWorkTip.getVisibility() != View.VISIBLE) {
@@ -169,6 +169,7 @@ public class DeviceListFragment extends BaseFragment implements IDeviceListFragm
         }
     }
 
+    @Override
     public void hideNetWorkTipView() {
         if (mNetWorkTip.getVisibility() != View.GONE) {
             AnimationUtil.translateView(mRlView, 0, 0, mNetWorkTip.getHeight(), 0, 300, false, null);

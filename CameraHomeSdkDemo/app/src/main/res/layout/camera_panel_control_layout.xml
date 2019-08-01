@@ -84,8 +84,13 @@
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/cloud_Txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="cloud storage"
+            android:gravity="center"
+            android:drawableTop="@drawable/camera_icon_playback_selector"
+            android:textColor="@color/camera_panel_control_color"
             android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>

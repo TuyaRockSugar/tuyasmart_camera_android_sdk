@@ -22,6 +22,7 @@ import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.base.utils.MessageUtil;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
 import com.tuya.smart.android.demo.camera.bean.CameraInfoBean;
+import com.tuya.smart.android.demo.device.common.CommonDeviceDebugPresenter;
 import com.tuya.smart.android.demo.utils.Constants;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
@@ -68,7 +69,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
     private Monitor mVideoView;
     private ImageView muteImg;
     private TextView qualityTv;
-    private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt;
+    private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt, cloudStorageTxt;
 
     private ICameraP2P mCameraP2P;
     private static final int ASPECT_RATIO_WIDTH = 9;
@@ -228,6 +229,8 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         replayTxt = findViewById(R.id.replay_Txt);
         settingTxt = findViewById(R.id.setting_Txt);
         settingTxt.setOnClickListener(this);
+        cloudStorageTxt = findViewById(R.id.cloud_Txt);
+
 
         WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
         int width = windowManager.getDefaultDisplay().getWidth();
@@ -249,7 +252,16 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         }
         mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(sdkProvider);
         mDeviceControl = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
-        getApi();
+//        getApi();
+
+        devId = "6ce318d3f4ede491fa18xw";
+        p2pType = 2;
+        localKey = "f47fd0eaad4bd91e";
+        p2pId = "TUYASA-106026-ZMZLU";
+        p2pWd = "ad36aaac";
+        mP2pKey = "nVpkO1Xqbojgr4Ks";
+        mInitStr = "EEGDFHBAKKIOGJIJFEHGEGFMGPMHGMMGGGEPADDDBFIELGLICNAHCEOCGGLDJJLFACMBLGDA:nVpkO1Xqbojgr4Ks";
+        initCameraView();
     }
 
     private void initCameraView() {
@@ -357,6 +369,8 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         recordTxt.setOnClickListener(this);
         photoTxt.setOnClickListener(this);
         replayTxt.setOnClickListener(this);
+
+        cloudStorageTxt.setOnClickListener(this);
     }
 
     @Override
@@ -390,6 +404,11 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
                 Intent intent1 = new Intent(CameraPanelActivity.this, SettingActivity.class);
                 intent1.putExtra("devId", devId);
                 startActivity(intent1);
+                break;
+            case R.id.cloud_Txt:
+                Intent intent2 = new Intent(CameraPanelActivity.this, CameraCloudStorageActivity.class);
+                intent2.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devId);
+                startActivity(intent2);
                 break;
             default:
                 break;
