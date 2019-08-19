@@ -74,7 +74,7 @@ public class CameraCloudStorageActivity extends AppCompatActivity implements OnP
             @Override
             public void onClick(View v) {
                 //购买页面
-                cameraCloudSDK.buyCloudStorage(CameraCloudStorageActivity.this, devId, String.valueOf(FamilyManager.getInstance().getCurrentHomeId()));
+                cameraCloudSDK.buyCloudStorage(CameraCloudStorageActivity.this, TuyaHomeSdk.getDataInstance().getDeviceBean(devId), String.valueOf(FamilyManager.getInstance().getCurrentHomeId()));
             }
         });
 
