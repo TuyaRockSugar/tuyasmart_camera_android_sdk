@@ -252,15 +252,15 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         }
         mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(sdkProvider);
         mDeviceControl = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
-//        getApi();
+        getApi();
 
-        devId = "6ce318d3f4ede491fa18xw";
-        p2pType = 2;
-        localKey = "f47fd0eaad4bd91e";
-        p2pId = "TUYASA-106026-ZMZLU";
-        p2pWd = "ad36aaac";
-        mP2pKey = "nVpkO1Xqbojgr4Ks";
-        mInitStr = "EEGDFHBAKKIOGJIJFEHGEGFMGPMHGMMGGGEPADDDBFIELGLICNAHCEOCGGLDJJLFACMBLGDA:nVpkO1Xqbojgr4Ks";
+//        devId = "6ce318d3f4ede491fa18xw";
+//        p2pType = 2;
+//        localKey = "f47fd0eaad4bd91e";
+//        p2pId = "TUYASA-106026-ZMZLU";
+//        p2pWd = "ad36aaac";
+//        mP2pKey = "nVpkO1Xqbojgr4Ks";
+//        mInitStr = "EEGDFHBAKKIOGJIJFEHGEGFMGPMHGMMGGGEPADDDBFIELGLICNAHCEOCGGLDJJLFACMBLGDA:nVpkO1Xqbojgr4Ks";
         initCameraView();
     }
 
