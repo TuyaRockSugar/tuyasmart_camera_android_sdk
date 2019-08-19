@@ -38,7 +38,7 @@ allprojects {
 dependencies {
     ...
     // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119.h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.11.0r119'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
     
