@@ -61,6 +61,8 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
 
 ## Update log
+- 2019.8.23
+  - Support P2P 3.0
 - 2019.8.1
   - Add cloud storage module
 - 2019.7.13
