@@ -83,8 +83,8 @@ dependencies {
     //
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119.h1'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.11.0r119'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119.h2'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.12.6r125h2'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
 
     implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'

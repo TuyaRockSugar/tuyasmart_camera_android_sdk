@@ -251,6 +251,9 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
             mlocalId = TuyaHomeSdk.getUserInstance().getUser().getUid();
         }
         mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(sdkProvider);
+        if (null == mCameraP2P) {
+            ToastUtil.shortToast(CameraPanelActivity.this, "device is not support!");
+        }
         mDeviceControl = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
         getApi();
 
@@ -261,7 +264,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
 //        p2pWd = "ad36aaac";
 //        mP2pKey = "nVpkO1Xqbojgr4Ks";
 //        mInitStr = "EEGDFHBAKKIOGJIJFEHGEGFMGPMHGMMGGGEPADDDBFIELGLICNAHCEOCGGLDJJLFACMBLGDA:nVpkO1Xqbojgr4Ks";
-        initCameraView();
+//        initCameraView();
     }
 
     private void initCameraView() {
@@ -522,15 +525,12 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
                     public void onSuccess(int sessionId, int requestId, String data) {
                         isSpeaking = true;
                         mHandler.sendMessage(MessageUtil.getMessage(MSG_TALK_BACK_BEGIN, ARG1_OPERATE_SUCCESS));
-                        ToastUtil.shortToast(CameraPanelActivity.this, "start talk success");
                     }
 
                     @Override
                     public void onFailure(int sessionId, int requestId, int errCode) {
                         isSpeaking = false;
                         mHandler.sendMessage(MessageUtil.getMessage(MSG_TALK_BACK_BEGIN, ARG1_OPERATE_FAIL));
-                        ToastUtil.shortToast(CameraPanelActivity.this, "operation fail");
-
                     }
                 });
             } else {
