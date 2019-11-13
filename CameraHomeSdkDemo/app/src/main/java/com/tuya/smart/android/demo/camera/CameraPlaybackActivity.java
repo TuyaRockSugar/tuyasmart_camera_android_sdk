@@ -146,9 +146,9 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
             if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
                 mBackDataDayCache.put(mCameraP2P.getDayKey(), timePieceBeanList);
             }
-            mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_SUCC);
+            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_SUCCESS));
         } else {
-            mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
+            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_FAIL));
         }
     }
 
