@@ -25,6 +25,7 @@ import com.tuya.smart.android.demo.camera.bean.CameraInfoBean;
 import com.tuya.smart.android.demo.device.common.CommonDeviceDebugPresenter;
 import com.tuya.smart.android.demo.utils.Constants;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
+import com.tuya.smart.camera.camerasdk.typlayer.callback.OnRenderDirectionCallback;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
 import com.tuya.smart.camera.ipccamerasdk.bean.ConfigCameraBean;
 import com.tuya.smart.camera.ipccamerasdk.monitor.Monitor;
@@ -36,6 +37,9 @@ import com.tuya.smart.sdk.api.IRequestCallback;
 import com.tuya.smart.sdk.bean.DeviceBean;
 import com.tuyasmart.camera.devicecontrol.ITuyaCameraDevice;
 import com.tuyasmart.camera.devicecontrol.TuyaCameraDeviceControlSDK;
+import com.tuyasmart.camera.devicecontrol.bean.DpPTZControl;
+import com.tuyasmart.camera.devicecontrol.bean.DpPTZStop;
+import com.tuyasmart.camera.devicecontrol.model.PTZDirection;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -211,6 +215,40 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         initView();
         initData();
         initListener();
+
+        if(mDeviceControl.isSupportCameraDps(DpPTZControl.ID)) {
+            mVideoView.setOnRenderDirectionCallback(new OnRenderDirectionCallback() {
+
+                @Override
+                public void onLeft() {
+                    mDeviceControl.publishCameraDps(DpPTZControl.ID, PTZDirection.LEFT.getDpValue());
+                }
+
+                @Override
+                public void onRight() {
+                    mDeviceControl.publishCameraDps(DpPTZControl.ID,PTZDirection.RIGHT.getDpValue());
+
+                }
+
+                @Override
+                public void onUp() {
+                    mDeviceControl.publishCameraDps(DpPTZControl.ID,PTZDirection.UP.getDpValue());
+
+                }
+
+                @Override
+                public void onDown() {
+                    mDeviceControl.publishCameraDps(DpPTZControl.ID,PTZDirection.DOWN.getDpValue());
+
+                }
+
+                @Override
+                public void onCancel() {
+                    mDeviceControl.publishCameraDps(DpPTZStop.ID,true);
+
+                }
+            });
+        }
     }
 
     private void initView() {
