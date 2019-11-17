@@ -42,7 +42,7 @@ dependencies {
     ...
     // tuya camera module
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119.h2'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.12.6r125h2'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.13.0r129'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
 
     implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'
@@ -53,7 +53,7 @@ dependencies {
     //not required Compatible with older versions
     implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
 
-    implementation 'com.tuya.smart:tuyasmart:3.9.6'
+    implementation 'com.tuya.smart:tuyasmart:3.12.4'
 }
 ```
 
@@ -66,6 +66,9 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 更多请参考: [涂鸦智能摄像机 Android SDK使用说明](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/zh-hans/)
 
 ## 更新日志
+- 2019.11.15
+    - 更新sdk(版本 3.13.0r129)
+    - 更新sdk demo
 - 2019.10.8
     - 更新sdk（版本 3.12.6r125）
 - 2019.8.1
