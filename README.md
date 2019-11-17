@@ -38,7 +38,7 @@ dependencies {
     ...
     // tuya camera module
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119.h2'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.12.6r125h2'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.13.0r129'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
 
     implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'
@@ -49,7 +49,7 @@ dependencies {
     //not required Compatible with older versions
     implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
 
-    implementation 'com.tuya.smart:tuyasmart:3.9.6'
+    implementation 'com.tuya.smart:tuyasmart:3.12.4'
 }
 ```
 For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](https://developer.android.com/studio/)
@@ -61,6 +61,9 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
 
 ## Update log
+- 2019.11.15
+  - Update SDK (base 3.13.0r129)
+  - Update SDK Demo
 - 2019.10.8
   - Update SDK（ base 3.12.6r125）
 - 2019.8.23
