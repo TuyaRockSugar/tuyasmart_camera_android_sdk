@@ -251,6 +251,9 @@
             android:name=".camera.CameraPlaybackActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".camera.AlarmDetectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".camera.CameraCloudStorageActivity"
             android:screenOrientation="portrait" />
     </application>

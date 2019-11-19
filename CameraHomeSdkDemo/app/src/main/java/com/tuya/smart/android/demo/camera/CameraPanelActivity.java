@@ -74,7 +74,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
     private Monitor mVideoView;
     private ImageView muteImg;
     private TextView qualityTv;
-    private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt, cloudStorageTxt;
+    private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt, cloudStorageTxt,messageCenterTxt;
 
     private ICameraP2P mCameraP2P;
     private static final int ASPECT_RATIO_WIDTH = 9;
@@ -270,7 +270,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         settingTxt = findViewById(R.id.setting_Txt);
         settingTxt.setOnClickListener(this);
         cloudStorageTxt = findViewById(R.id.cloud_Txt);
-
+        messageCenterTxt =  findViewById(R.id.message_center_Txt);
 
         WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
         int width = windowManager.getDefaultDisplay().getWidth();
@@ -417,6 +417,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         replayTxt.setOnClickListener(this);
 
         cloudStorageTxt.setOnClickListener(this);
+        messageCenterTxt.setOnClickListener(this);
     }
 
     @Override
@@ -455,6 +456,11 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
                 Intent intent2 = new Intent(CameraPanelActivity.this, CameraCloudStorageActivity.class);
                 intent2.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devId);
                 startActivity(intent2);
+                break;
+            case R.id.message_center_Txt:
+                Intent intent3 = new Intent(CameraPanelActivity.this, AlarmDetectionActivity.class);
+                intent3.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devId);
+                startActivity(intent3);
                 break;
             default:
                 break;

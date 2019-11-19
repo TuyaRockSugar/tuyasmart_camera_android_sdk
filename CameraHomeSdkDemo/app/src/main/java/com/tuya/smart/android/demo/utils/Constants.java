@@ -49,6 +49,13 @@ public class Constants {
     public static final int MSG_DATA_DATE_BY_DAY_SUCC = 2045;
     public static final int MSG_DATA_DATE_BY_DAY_FAIL = 2046;
 
+    public static final int ALARM_DETECTION_DATE_MONTH_FAILED = 2047;
+    public static final int ALARM_DETECTION_DATE_MONTH_SUCCESS = 2048;
+    public static final int MSG_GET_ALARM_DETECTION = 2049;
+    public static final int MOTION_CLASSIFY_FAILED = 2050;
+    public static final int MOTION_CLASSIFY_SUCCESS = 2051;
+    public static final int MSG_DELETE_ALARM_DETECTION = 2052;
+
     public synchronized static boolean hasStoragePermission() {
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "a.log";
         try {
