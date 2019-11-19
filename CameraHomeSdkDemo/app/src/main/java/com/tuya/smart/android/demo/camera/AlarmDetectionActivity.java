@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,10 +16,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.base.utils.MessageUtil;
+import com.tuya.smart.android.demo.camera.adapter.AlarmDetectionAdapter;
+import com.tuya.smart.android.demo.utils.DateUtils;
+import com.tuya.smart.android.demo.utils.TimeZoneUtils;
 import com.tuya.smart.android.network.Business;
 import com.tuya.smart.android.network.http.BusinessResponse;
-import com.tuya.smart.camera.middleware.cloud.TimeZoneUtils;
-import com.tuya.smart.camera.utils.DateUtils;
 import com.tuya.smart.ipc.messagecenter.bean.CameraMessageBean;
 import com.tuya.smart.ipc.messagecenter.bean.CameraMessageClassifyBean;
 import com.tuya.smart.ipc.messagecenter.business.CameraMessageBusiness;
@@ -47,7 +51,9 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     private CameraMessageBusiness messageBusiness;
     private CameraMessageClassifyBean selectClassify;
     private EditText dateInputEdt;
+    private RecyclerView queryRv;
     private Button queryBtn;
+    private AlarmDetectionAdapter adapter;
     private int day;
     private int offset = 0;
 
@@ -61,10 +67,18 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
                 case ALARM_DETECTION_DATE_MONTH_SUCCESS:
                     handlAlarmDetectionDateSuccess(msg);
                     break;
+                case MSG_GET_ALARM_DETECTION:
+                    handleAlarmDetection();
+                    break;
             }
             super.handleMessage(msg);
         }
     };
+
+    private void handleAlarmDetection() {
+        adapter.updateAlarmDetectionMessage(mCameraMessageList);
+        adapter.notifyDataSetChanged();
+    }
 
     private void handlAlarmDetectionDateFail(Message msg) {
 
@@ -101,6 +115,7 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
                         }
                         if (msgList != null) {
                             offset += msgList.size();
+                            mCameraMessageList = msgList;
                             mHandler.sendMessage(MessageUtil.getMessage(MSG_GET_ALARM_DETECTION, ARG1_OPERATE_SUCCESS));
                         } else {
                             mHandler.sendMessage(MessageUtil.getMessage(MSG_GET_ALARM_DETECTION, ARG1_OPERATE_FAIL));
@@ -128,6 +143,7 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     private void initView() {
         dateInputEdt = findViewById(R.id.date_input_edt);
         queryBtn = findViewById(R.id.query_btn);
+        queryRv = findViewById(R.id.query_list);
     }
 
     private void initData() {
@@ -135,6 +151,12 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
         mCameraMessageList = new ArrayList<>();
         messageBusiness = new CameraMessageBusiness();
         queryCameraMessageClassify(devId);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        queryRv.setLayoutManager(mLayoutManager);
+        queryRv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapter = new AlarmDetectionAdapter(this, mCameraMessageList);
+        queryRv.setAdapter(adapter);
     }
 
     public void queryCameraMessageClassify(String devId) {

@@ -86,6 +86,7 @@ dependencies {
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119.h2'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.13.0r129'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r128'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
 
     implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'
     implementation 'com.github.wendux:DSBridge-Android:3.0-SNAPSHOT'
