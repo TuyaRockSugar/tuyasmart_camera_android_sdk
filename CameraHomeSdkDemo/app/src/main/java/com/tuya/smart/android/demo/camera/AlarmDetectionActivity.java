@@ -54,7 +54,7 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     private RecyclerView queryRv;
     private Button queryBtn;
     private AlarmDetectionAdapter adapter;
-    private int day;
+    private int day,year,month;
     private int offset = 0;
 
     private Handler mHandler = new Handler() {
@@ -86,8 +86,9 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
 
     private void handlAlarmDetectionDateSuccess(Message msg) {
             if (null != messageBusiness){
-                long startTime = DateUtils.getTodayStart(day);
-                long endTime = DateUtils.getTodayEnd(day) - 1L;
+                long time = DateUtils.getCurrentTime(year, month, day);
+                long startTime = DateUtils.getTodayStart(time);
+                long endTime = DateUtils.getTodayEnd(time) - 1L;
                 JSONObject object = new JSONObject();
                 object.put("msgSrcId", devId);
                 object.put("startTime", startTime);
@@ -217,8 +218,8 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     private void queryAlarmDetectionByMonth() {
         String inputStr = dateInputEdt.getText().toString();
         String[] substring = inputStr.split("/");
-        int year = Integer.parseInt(substring[0]);
-        int month = Integer.parseInt(substring[1]);
+        year = Integer.parseInt(substring[0]);
+        month = Integer.parseInt(substring[1]);
         JSONObject object = new JSONObject();
         object.put("msgSrcId", devId);
         object.put("timeZone", TimeZoneUtils.getTimezoneGCMById(TimeZone.getDefault().getID()));

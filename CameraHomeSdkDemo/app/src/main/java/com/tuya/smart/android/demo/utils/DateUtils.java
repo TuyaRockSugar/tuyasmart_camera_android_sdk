@@ -58,6 +58,36 @@ public class DateUtils {
         return calendar.getTimeInMillis();
     }
 
+    /**
+     *
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     */
+    public static long getCurrentTime(int year, int month, int day) {
+        String monthStr;
+        if (month < 10) {
+            monthStr = "0" + month;
+        } else {
+            monthStr = "" + month;
+        }
+        String dayStr;
+        if (day < 10) {
+            dayStr = "0" + day;
+        } else {
+            dayStr = "" + day;
+        }
+        String currentDate = year + monthStr + dayStr;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date date = simpleDateFormat.parse(currentDate);
+            return date.getTime();
+        } catch (ParseException px) {
+            px.printStackTrace();
+        }
+        return 0;
+    }
 
 
 }
