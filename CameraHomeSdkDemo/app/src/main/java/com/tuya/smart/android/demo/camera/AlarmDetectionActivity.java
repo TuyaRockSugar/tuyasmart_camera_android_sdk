@@ -70,10 +70,19 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
                 case MSG_GET_ALARM_DETECTION:
                     handleAlarmDetection();
                     break;
+                case MSG_DELETE_ALARM_DETECTION:
+                    handleDeleteAlarmDetection();
+                    break;
             }
             super.handleMessage(msg);
         }
     };
+
+    private void handleDeleteAlarmDetection() {
+        mCameraMessageList.removeAll(mWaitingDeleteCameraMessageList);
+        adapter.updateAlarmDetectionMessage(mCameraMessageList);
+        adapter.notifyDataSetChanged();
+    }
 
     private void handleAlarmDetection() {
         adapter.updateAlarmDetectionMessage(mCameraMessageList);
@@ -157,6 +166,12 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
         queryRv.setLayoutManager(mLayoutManager);
         queryRv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         adapter = new AlarmDetectionAdapter(this, mCameraMessageList);
+        adapter.setListener(new AlarmDetectionAdapter.OnItemListener() {
+            @Override
+            public void onLongClick(CameraMessageBean o) {
+                deleteCameraMessageClassify(o);
+            }
+        });
         queryRv.setAdapter(adapter);
     }
 
@@ -178,16 +193,17 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     }
 
 
-    public void deleteCameraMessageClassify() {
-        StringBuilder ids = new StringBuilder();
+    public void deleteCameraMessageClassify(CameraMessageBean cameraMessageBean) {
+        mWaitingDeleteCameraMessageList.add(cameraMessageBean);
+//        StringBuilder ids = new StringBuilder();
         if (messageBusiness != null) {
-            for (int i = 0; i < mWaitingDeleteCameraMessageList.size(); i++) {
-                ids.append(mWaitingDeleteCameraMessageList.get(i).getId());
-                if (i != mWaitingDeleteCameraMessageList.size() - 1) {
-                    ids.append(",");
-                }
-            }
-            messageBusiness.deleteAlarmDetectionMessageList(ids.toString(), new Business.ResultListener<Boolean>() {
+//            for (int i = 0; i < mWaitingDeleteCameraMessageList.size(); i++) {
+//                ids.append(mWaitingDeleteCameraMessageList.get(i).getId());
+//                if (i != mWaitingDeleteCameraMessageList.size() - 1) {
+//                    ids.append(",");
+//                }
+//            }
+            messageBusiness.deleteAlarmDetectionMessageList(cameraMessageBean.getId(), new Business.ResultListener<Boolean>() {
                 @Override
                 public void onFailure(BusinessResponse businessResponse, Boolean aBoolean, String s) {
                     mHandler.sendMessage(MessageUtil.getMessage(MSG_DELETE_ALARM_DETECTION, ARG1_OPERATE_FAIL));

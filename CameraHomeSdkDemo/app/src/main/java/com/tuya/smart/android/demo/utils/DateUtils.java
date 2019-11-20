@@ -39,7 +39,7 @@ public class DateUtils {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        return calendar.getTimeInMillis();
+        return calendar.getTimeInMillis() / 1000L;
     }
 
     /**
@@ -55,7 +55,7 @@ public class DateUtils {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
-        return calendar.getTimeInMillis();
+        return calendar.getTimeInMillis() / 1000L;
     }
 
     /**
