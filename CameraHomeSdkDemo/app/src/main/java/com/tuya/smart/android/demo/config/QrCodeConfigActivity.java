@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.zxing.WriterException;
 import com.tuya.smart.android.common.utils.WiFiUtil;
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
@@ -82,15 +83,21 @@ public class QrCodeConfigActivity extends AppCompatActivity implements ITuyaSmar
 
     @Override
     public void onQRCodeSuccess(String s) {
-        final Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(s, 300, 300);
-        QrCodeConfigActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mIvQr.setImageBitmap(bitmap);
-                mIvQr.setVisibility(View.VISIBLE);
-                mLlInputWifi.setVisibility(View.GONE);
-            }
-        });
+        final Bitmap bitmap;
+        try {
+            bitmap = QRCodeUtil.createQRCode(s, 300);
+            QrCodeConfigActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mIvQr.setImageBitmap(bitmap);
+                    mIvQr.setVisibility(View.VISIBLE);
+                    mLlInputWifi.setVisibility(View.GONE);
+                }
+            });
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
