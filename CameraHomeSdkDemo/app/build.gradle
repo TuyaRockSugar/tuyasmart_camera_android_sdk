@@ -94,10 +94,9 @@ dependencies {
     implementation 'com.tuya.smart:tuyasmart:3.11.0'
 
     //商城组件
-    implementation 'com.tuya.smart:tuyasmart-webcontainer:3.12.6r125-SNAPSHOT'
+    implementation 'com.tuya.smart:tuyasmart-webcontainer:3.12.6r125'
     implementation 'com.tuya.smart:tuyasmart-xplatformmanager:1.0.0'
     implementation "com.tuya.smart:tuyasmart-base:3.13.0r127"
-
     implementation 'com.tuya.smart:tuyasmart-appshell:3.10.0'
     implementation "com.tuya.smart:tuyasmart-stencilwrapper:3.13.0r127"
     implementation 'com.tuya.smart:tuyasmart-uispecs:0.0.3'
