@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'tymodule-config'
 
 android {
     compileSdkVersion 27
@@ -86,7 +87,7 @@ dependencies {
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.13.0r129'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
-    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.13.1r129-SNAPSHOT'
+    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.13.2r130-SNAPSHOT'
 
     //not required Compatible with older versions
     implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
@@ -99,6 +100,7 @@ dependencies {
     implementation "com.tuya.smart:tuyasmart-base:3.13.0r127"
     implementation 'com.tuya.smart:tuyasmart-appshell:3.10.0'
     implementation "com.tuya.smart:tuyasmart-stencilwrapper:3.13.0r127"
+    implementation "com.tuya.smart:tuyasmart-framework:3.13.0r127-open-rc.1"
     implementation 'com.tuya.smart:tuyasmart-uispecs:0.0.3'
 
 }

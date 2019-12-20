@@ -8,8 +8,10 @@ import android.support.multidex.MultiDexApplication;
 
 import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.login.activity.LoginActivity;
+import com.tuya.smart.api.SmartInitializer;
 import com.tuya.smart.sdk.TuyaSdk;
 import com.tuya.smart.sdk.api.INeedLoginListener;
+import com.tuya.smart.wrapper.api.TuyaWrapper;
 
 
 public class TuyaSmartApp extends MultiDexApplication {
@@ -22,6 +24,7 @@ public class TuyaSmartApp extends MultiDexApplication {
         context=this;
         L.d(TAG, "onCreate " + getProcessName(this));
         L.setSendLogOn(true);
+        TuyaWrapper.init(this);
         TuyaSdk.init(this);
         TuyaSdk.setOnNeedLoginListener(new INeedLoginListener() {
             @Override

@@ -15,6 +15,7 @@ import com.tuyasmart.camera.devicecontrol.bean.DpBasicIndicator;
 import com.tuyasmart.camera.devicecontrol.bean.DpBasicOSD;
 import com.tuyasmart.camera.devicecontrol.bean.DpBasicPrivate;
 import com.tuyasmart.camera.devicecontrol.bean.DpMotionSensitivity;
+import com.tuyasmart.camera.devicecontrol.bean.DpRestore;
 import com.tuyasmart.camera.devicecontrol.bean.DpSDFormat;
 import com.tuyasmart.camera.devicecontrol.bean.DpSDFormatStatus;
 import com.tuyasmart.camera.devicecontrol.bean.DpSDRecordModel;
@@ -45,6 +46,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_setting);
         showQueryTxt = findViewById(R.id.tv_show_query);
         showPublishTxt = findViewById(R.id.tv_show_publish);
+        findViewById(R.id.btn_resetore).setOnClickListener(this);
         findViewById(R.id.btn_sdstatus).setOnClickListener(this);
         findViewById(R.id.btn_storage).setOnClickListener(this);
         findViewById(R.id.btn_basic_flip).setOnClickListener(this);
@@ -284,6 +286,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 }
             });
             mTuyaCameraDevice.publishCameraDps(DpWirelessPowermode.ID, null);
+        } else if (R.id.btn_resetore == v.getId()){
+            mTuyaCameraDevice.publishCameraDps(DpRestore.ID, true);
         }
     }
 }
