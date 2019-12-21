@@ -1,5 +1,6 @@
 package com.tuya.smart.android.demo.camera;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +17,13 @@ import com.tuya.smart.camera.ipccamerasdk.cloud.TYCloudCamera;
 import com.tuya.smart.camera.ipccamerasdk.monitor.Monitor;
 import com.tuya.smart.camera.middleware.cloud.CameraCloudSDK;
 import com.tuya.smart.camera.middleware.cloud.ICloudCacheManagerCallback;
+import com.tuya.smart.camera.middleware.cloud.ICloudManagerCallback;
 import com.tuya.smart.camera.middleware.cloud.bean.CloudDayBean;
 import com.tuya.smart.camera.middleware.cloud.bean.TimePieceBean;
 import com.tuya.smart.camera.middleware.cloud.bean.TimeRangeBean;
 import com.tuya.smart.camera.utils.IPCCameraUtils;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
+import com.tuya.smart.jsbridge.base.webview.WebViewActivity;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -74,7 +77,22 @@ public class CameraCloudStorageActivity extends AppCompatActivity implements OnP
             @Override
             public void onClick(View v) {
                 //购买页面
-                cameraCloudSDK.buyCloudStorage(CameraCloudStorageActivity.this, TuyaHomeSdk.getDataInstance().getDeviceBean(devId), String.valueOf(FamilyManager.getInstance().getCurrentHomeId()));
+                cameraCloudSDK.buyCloudStorage(CameraCloudStorageActivity.this,
+                        TuyaHomeSdk.getDataInstance().getDeviceBean(devId),
+                        String.valueOf(FamilyManager.getInstance().getCurrentHomeId()), new ICloudManagerCallback() {
+                            @Override
+                            public void onError(int i) {
+
+                            }
+
+                            @Override
+                            public void onSuccess(Object o) {
+                                String uri = (String) o;
+                                Intent intent = new Intent(CameraCloudStorageActivity.this, WebViewActivity.class);
+                                intent.putExtra("Uri",uri);
+                                startActivity(intent);
+                            }
+                        });
             }
         });
 

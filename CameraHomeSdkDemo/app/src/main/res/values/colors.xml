@@ -104,4 +104,10 @@
     <color name="switch_on_color">#2A87D6</color>
     <color name="switch_off_color">#303030</color>
     <color name="color_dddddd">#dddddd</color>
+
+
+    <color name="colorPrimary">#FF5800</color>
+    <color name="colorPrimaryDark">#e54000</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="window_bg">#F2F2F2</color>
 </resources>

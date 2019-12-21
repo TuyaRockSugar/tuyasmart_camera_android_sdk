@@ -1,5 +1,75 @@
 <resources>
 
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/window_bg</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/ty_pre</item>
+    </style>
+
+    <style name="edit_text_input">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/edit_height</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorHint">?attr/list_secondary_color</item>
+        <item name="android:textColor">?attr/list_primary_color</item>
+    </style>
+
+    <style name="TY_SingleLine_Normal">
+        <item name="android:layout_height">1px</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/line_color</item>
+    </style>
+    <!-- 普通的文本按钮 -->
+    <style name="Button.Normal" parent="android:Widget.Button">
+        <item name="android:layout_height">@dimen/wh_36</item>
+        <item name="android:minWidth">@dimen/wh_88</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/ts_18</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:background">@drawable/button_orange</item>
+        <item name="android:textColor">@color/button_orange_text</item>
+    </style>
+
+    <style name="TY.Progress.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="android:lineSpacingExtra">@dimen/wh_4</item>
+    </style>
+
+    <!-- listview有分割线 -->
+    <style name="TY_List_Normal">
+        <item name="android:fadingEdge">none</item>
+        <item name="android:listSelector">@android:color/transparent</item>
+        <item name="android:divider">@color/line_color</item>
+        <item name="android:dividerHeight">@dimen/single_pix</item>
+        <item name="android:listDivider">@drawable/ty_color_line</item>
+        <item name="android:footerDividersEnabled">false</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:scrollbarThumbVertical">@drawable/ty_scrollbar_thumb</item>
+        <item name="android:scrollbarTrackVertical">@null</item>
+    </style>
+
+
+    <style name="toolbar_menu_text" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
     <style name="AppTheme.Base" parent="Theme.AppCompat.NoActionBar">
         <!-- colorPrimary is used for the default action bar background -->
         <item name="colorPrimary">?attr/status_bg_color</item>
@@ -51,34 +121,10 @@
         <item name="android:taskToBackExitAnimation">@null</item>
     </style>
 
-    <style name="edit_text_input">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/edit_height</item>
-        <item name="android:background">@null</item>
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textCursorDrawable">@null</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColorHint">?attr/list_secondary_color</item>
-        <item name="android:textColor">?attr/list_primary_color</item>
-
-    </style>
-
-    <style name="toolbar_action_text" parent="@android:style/Theme.Holo.Light">
-        <item name="android:textSize">17sp</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="titleTextAppearance">@style/myActionTitleTextAppearance</item>
-    </style>
-
     <style name="MyMenuTextAppearance" parent="android:TextAppearance.Holo.Widget.ActionBar.Menu">
         <!-- 此处需要 android-14 -->
         <item name="android:textAllCaps">false</item>
     </style>
-    <style name="AppTheme" parent="AppTheme.Base"></style>
 
     <!-- 普通文本 -->
     <style name="TextView.Normal" parent="android:Widget.TextView">
@@ -95,18 +141,7 @@
         <item name="android:maxHeight">23dp</item>
         <item name="android:textColor">@color/color_626262</item>
     </style>
-    <!-- 普通的文本按钮 -->
-    <style name="Button.Normal" parent="android:Widget.Button">
-        <item name="android:layout_height">@dimen/wh_36</item>
-        <item name="android:minWidth">@dimen/wh_88</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textSize">@dimen/ts_18</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:background">@drawable/button_orange</item>
-        <item name="android:textColor">@color/button_orange_text</item>
-    </style>
+
 
     <!-- list view-->
     <style name="list_view">
@@ -172,18 +207,6 @@
         <item name="android:textColor">@color/text_color</item>
     </style>
 
-    <!-- listview有分割线 -->
-    <style name="TY_List_Normal">
-        <item name="android:fadingEdge">none</item>
-        <item name="android:listSelector">@android:color/transparent</item>
-        <item name="android:divider">@color/line_color</item>
-        <item name="android:dividerHeight">@dimen/single_pix</item>
-        <item name="android:listDivider">@drawable/ty_color_line</item>
-        <item name="android:footerDividersEnabled">false</item>
-        <item name="android:cacheColorHint">@android:color/transparent</item>
-        <item name="android:scrollbarThumbVertical">@drawable/ty_scrollbar_thumb</item>
-        <item name="android:scrollbarTrackVertical">@null</item>
-    </style>
 
     <style name="Dialog.Alert.NoTitle" parent="@style/Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
@@ -202,10 +225,6 @@
         <!--<item name="android:listChoiceIndicatorSingle">@null</item>-->
     </style>
 
-    <style name="TY.Progress.Dialog" parent="Theme.AppCompat.Dialog">
-        <item name="colorAccent">@color/color_accent</item>
-        <item name="android:lineSpacingExtra">@dimen/wh_4</item>
-    </style>
     <style name="ToolBarStyle" parent="ToolBarStyle.Base"/>
 
     <style name="ToolBarStyle.Base" parent="">
@@ -287,12 +306,7 @@
     <style name="Splash.Theme" parent="Default_Public_Theme">
         <item name="android:windowBackground">@drawable/ty_pre</item>
     </style>
-    <!-- 分割线1px -->
-    <style name="TY_SingleLine_Normal">
-        <item name="android:layout_height">1px</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@color/line_color</item>
-    </style>
+
 
     <color name="color_ff5800">#ff5800</color>
 
