@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.base.utils.MessageUtil;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
@@ -293,7 +294,10 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(sdkProvider);
         if (null == mCameraP2P) {
             ToastUtil.shortToast(CameraPanelActivity.this, "device is not support!");
+        }else{
+//            mCameraP2P.isEchoData(true);
         }
+
         mDeviceControl = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
         getApi();
 //        mlocalId="ay1514340412044cdJ4q";
@@ -569,6 +573,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
             });
         } else {
             if (Constants.hasRecordPermission()) {
+                mCameraP2P.isEchoData(true);
                 mCameraP2P.startAudioTalk(new OperationDelegateCallBack() {
                     @Override
                     public void onSuccess(int sessionId, int requestId, String data) {
@@ -697,5 +702,17 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
     @Override
     public void onSessionStatusChanged(Object o, int i, int i1) {
 
+    }
+
+
+    @Override
+    public void onReceiveSpeakerEchoData(ByteBuffer pcm, int sampleRate) {
+        if (null != mCameraP2P){
+            int length = pcm.capacity();
+            L.d(TAG, "receiveSpeakerEchoData pcmlength " + length + " sampleRate " + sampleRate);
+            byte[] pcmData = new byte[length];
+            pcm.get(pcmData, 0, length);
+            mCameraP2P.sendAudioTalkData(pcmData,length);
+        }
     }
 }

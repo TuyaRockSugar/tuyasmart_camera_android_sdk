@@ -464,4 +464,9 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
     public void onSessionStatusChanged(Object o, int i, int i1) {
 
     }
+
+    @Override
+    public void onReceiveSpeakerEchoData(ByteBuffer byteBuffer, int i) {
+
+    }
 }
