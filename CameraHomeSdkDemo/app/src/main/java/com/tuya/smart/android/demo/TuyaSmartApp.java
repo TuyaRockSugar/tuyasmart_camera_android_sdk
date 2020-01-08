@@ -9,6 +9,7 @@ import android.support.multidex.MultiDexApplication;
 import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.login.activity.LoginActivity;
 import com.tuya.smart.api.SmartInitializer;
+import com.tuya.smart.home.sdk.TuyaHomeSdk;
 import com.tuya.smart.sdk.TuyaSdk;
 import com.tuya.smart.sdk.api.INeedLoginListener;
 import com.tuya.smart.wrapper.api.TuyaWrapper;
@@ -25,8 +26,8 @@ public class TuyaSmartApp extends MultiDexApplication {
         L.d(TAG, "onCreate " + getProcessName(this));
         L.setSendLogOn(true);
         TuyaWrapper.init(this);
-        TuyaSdk.init(this);
-        TuyaSdk.setOnNeedLoginListener(new INeedLoginListener() {
+        TuyaHomeSdk.init(this);
+        TuyaHomeSdk.setOnNeedLoginListener(new INeedLoginListener() {
             @Override
             public void onNeedLogin(Context context) {
                 Intent intent = new Intent(context, LoginActivity.class);
