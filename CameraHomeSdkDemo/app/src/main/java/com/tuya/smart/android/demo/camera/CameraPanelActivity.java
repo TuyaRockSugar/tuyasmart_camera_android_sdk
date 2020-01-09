@@ -330,14 +330,10 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
 
 
     private void connect() {
-        DeviceBean deviceBean = TuyaHomeSdk.getDataInstance().getDeviceBean(devId);
+//        DeviceBean deviceBean = TuyaHomeSdk.getDataInstance().getDeviceBean(devId);
+//            String localkey = deviceBean.getLocalKey();
+//            mDeviceControl.wirelessWake(localkey, devId);
 
-        if (null != mDeviceControl && null != deviceBean
-                && null != deviceBean.getUiName()
-                && deviceBean.getUiName().equals("CameraPbList")) {
-            String localkey = deviceBean.getLocalKey();
-            mDeviceControl.wirelessWake(localkey, devId);
-        }
         mCameraP2P.connect(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {

@@ -6,7 +6,7 @@ android {
     buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.haier.ubot"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -14,7 +14,7 @@ android {
         multiDexEnabled true
 
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a"
+            abiFilters "arm64-v8a"
         }
     }
     buildTypes {
@@ -83,11 +83,11 @@ dependencies {
     //picasso
     implementation 'com.squareup.picasso:picasso:2.5.2'
     // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.13.1r129-SNAPSHOT'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.13.3r130'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.14.4r134'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
-    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.13.2r130-SNAPSHOT'
+    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.14.3r133'
 
     //not required Compatible with older versions
     implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"

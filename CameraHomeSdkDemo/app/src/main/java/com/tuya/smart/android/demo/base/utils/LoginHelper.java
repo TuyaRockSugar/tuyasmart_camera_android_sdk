@@ -2,25 +2,62 @@ package com.tuya.smart.android.demo.base.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 
+import com.tuya.smart.android.camera.api.ITuyaHomeCamera;
+import com.tuya.smart.android.camera.api.bean.CameraPushDataBean;
+import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.login.activity.LoginActivity;
 import com.tuya.smart.android.demo.base.app.Constant;
+import com.tuya.smart.api.MicroContext;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
+import com.tuya.smart.sdk.api.ITuyaGetBeanCallback;
+import com.tuyasmart.stencil.utils.BaseActivityUtils;
+
+import static com.tuya.smart.camera.utils.IntentUtils.INTENT_CONTENT;
+import static com.tuya.smart.camera.utils.IntentUtils.INTENT_DEVID;
+import static com.tuya.smart.camera.utils.IntentUtils.INTENT_MSGID;
+import static com.tuya.smart.camera.utils.IntentUtils.INTENT_TITLE;
 
 
 /**
  * Created by letian on 16/7/15.
  */
 public class LoginHelper {
+    private static final String TAG = "LoginHelper";
+    private static ITuyaHomeCamera homeCamera;
 
+    private static ITuyaGetBeanCallback<CameraPushDataBean> mTuyaGetBeanCallback = new ITuyaGetBeanCallback<CameraPushDataBean>() {
+        @Override
+        public void onResult(CameraPushDataBean o) {
+            L.d(TAG, "onMqtt_43_Result on callback");
+            L.d(TAG, "timestamp=" + o.getTimestamp());
+            L.d(TAG, "devid=" + o.getDevId());
+            L.d(TAG, "msgid=" + o.getEdata());
+            L.d(TAG, "etype=" + o.getEtype());
+
+        }
+    };
 
     public static void afterLogin() {
 
         //there is the somethings that need to set.For example the lat and lon;
         //   TuyaSdk.setLatAndLong();
+        homeCamera = TuyaHomeSdk.getCameraInstance();
+        if (homeCamera != null) {
+            homeCamera.registerCameraPushListener(mTuyaGetBeanCallback);
+        }
     }
 
+    private static void afterLogout() {
+        L.d(TAG, "afterLogout unregister thread " + Thread.currentThread().getName());
+        if (homeCamera != null) {
+            homeCamera.unRegisterCameraPushListener(mTuyaGetBeanCallback);
+        }
+        homeCamera = null;
+    }
 
     /**
      * 唤起重新登录
@@ -40,6 +77,7 @@ public class LoginHelper {
     }
 
     private static void onLogout(Context context) {
+        afterLogout();
         exit(context);
     }
 
