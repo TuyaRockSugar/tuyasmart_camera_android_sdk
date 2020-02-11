@@ -92,7 +92,7 @@ dependencies {
     //not required Compatible with older versions
     implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
 
-    implementation 'com.tuya.smart:tuyasmart:3.11.0'
+    implementation 'com.tuya.smart:tuyasmart:3.12.4'
 
     //商城组件
     implementation 'com.tuya.smart:tuyasmart-webcontainer:3.12.6r125'

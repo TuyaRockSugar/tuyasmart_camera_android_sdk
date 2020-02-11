@@ -4,10 +4,14 @@ buildscript {
     repositories {
         google()
         jcenter() { url 'http://jcenter.bintray.com/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven {
+            url 'https://github.com/TuyaInc/mavenrepo/tree/master/releases'
+        }
         maven {
             url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
         }
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+
 
         maven { url 'https://jitpack.io' }
     }
@@ -23,10 +27,13 @@ allprojects {
     repositories {
         google()
         jcenter() { url 'http://jcenter.bintray.com/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven {
+            url 'https://github.com/TuyaInc/mavenrepo/tree/master/releases'
+        }
         maven {
             url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
         }
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
 
         maven { url 'https://jitpack.io' }
     }
