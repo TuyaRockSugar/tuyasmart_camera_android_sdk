@@ -2,24 +2,15 @@ package com.tuya.smart.android.demo.base.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 
 import com.tuya.smart.android.camera.api.ITuyaHomeCamera;
 import com.tuya.smart.android.camera.api.bean.CameraPushDataBean;
 import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.R;
-import com.tuya.smart.android.demo.login.activity.LoginActivity;
 import com.tuya.smart.android.demo.base.app.Constant;
-import com.tuya.smart.api.MicroContext;
+import com.tuya.smart.android.demo.login.activity.LoginActivity;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
 import com.tuya.smart.sdk.api.ITuyaGetBeanCallback;
-import com.tuyasmart.stencil.utils.BaseActivityUtils;
-
-import static com.tuya.smart.camera.utils.IntentUtils.INTENT_CONTENT;
-import static com.tuya.smart.camera.utils.IntentUtils.INTENT_DEVID;
-import static com.tuya.smart.camera.utils.IntentUtils.INTENT_MSGID;
-import static com.tuya.smart.camera.utils.IntentUtils.INTENT_TITLE;
 
 
 /**
