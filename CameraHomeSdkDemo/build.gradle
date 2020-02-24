@@ -12,7 +12,7 @@ buildscript {
         maven {
             url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
         }
-        jcenter() { url 'http://jcenter.bintray.com/' }
+        jcenter()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
 
 
@@ -39,7 +39,7 @@ allprojects {
         maven {
             url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
         }
-        jcenter() { url 'http://jcenter.bintray.com/' }
+        jcenter()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
 
         maven { url 'https://jitpack.io' }
