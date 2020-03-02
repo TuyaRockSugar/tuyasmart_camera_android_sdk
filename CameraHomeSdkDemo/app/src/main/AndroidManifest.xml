@@ -3,28 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tuya.smart.android.demo">
     <!-- sdcard -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.READ_PHONE_STATE"
-        android:required="false" /> <!-- 网络 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:required="false" />
-    <uses-permission
-        android:name="android.permission.WAKE_LOCK"
-        android:required="false" /> <!-- added from 2.7.2 -->
-    <uses-permission
-        android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"
-        android:required="false" />
-
     <application
         android:name=".TuyaSmartApp"
         android:allowBackup="true"
@@ -34,14 +12,8 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:replace="android:supportsRtl">
-        <activity android:name=".camera.SettingActivity"></activity>
-
-        <meta-data
-            android:name="TUYA_SMART_APPKEY"
-            android:value="3qxjvks9rvnns8rc5aaj" />
-        <meta-data
-            android:name="TUYA_SMART_SECRET"
-            android:value="7wvg7vmhfhj3fkx9r4x9rn7f9xxd9d9q" />
+        <activity android:name=".camera.CameraCloudVideoActivity"></activity>
+        <activity android:name=".camera.SettingActivity" />
 
         <activity
             android:name=".base.activity.SplashActivity"
@@ -57,6 +29,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Splash.Theme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".login.activity.CountryListActivity"
             android:screenOrientation="portrait"
@@ -169,35 +142,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/ToolrTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
-        <service
-            android:name="com.tuya.smart.android.hardware.service.GwBroadcastMonitorService"
-            android:exported="true"
-            android:label="UDPService"
-            android:process=":monitor">
-            <intent-filter>
-                <action android:name="tuya.intent.action.udp" />
-
-                <category android:name="tuya" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.tuya.smart.android.hardware.service.DevTransferService"
-            android:label="TCPService">
-            <intent-filter>
-                <action android:name="tuya.intent.action.tcp" />
-
-                <category android:name="tuya" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.tuya.smart.mqtt.MqttService"
-            android:stopWithTask="true" />
-
         <activity
             android:name=".base.activity.UDPActivity"
             android:theme="@style/ToolrTheme" />
         <activity android:name=".base.activity.TestMeshActivity" />
+
         <activity
             android:name=".base.activity.ZigBeeConfigActivity"
             android:screenOrientation="portrait"
@@ -213,6 +162,7 @@
                 <category android:name="tuya" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".family.activity.FamilyIndexActivity"
             android:screenOrientation="portrait"
@@ -256,6 +206,57 @@
         <activity
             android:name=".camera.CameraCloudStorageActivity"
             android:screenOrientation="portrait" />
+        <meta-data
+            android:name="TUYA_SMART_APPKEY"
+            android:value="3qxjvks9rvnns8rc5aaj" />
+        <meta-data
+            android:name="TUYA_SMART_SECRET"
+            android:value="7wvg7vmhfhj3fkx9r4x9rn7f9xxd9d9q" />
+        <service
+            android:name="com.tuya.smart.android.hardware.service.GwBroadcastMonitorService"
+            android:exported="true"
+            android:label="UDPService"
+            android:process=":monitor">
+            <intent-filter>
+                <action android:name="tuya.intent.action.udp" />
+
+                <category android:name="tuya" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.tuya.smart.android.hardware.service.DevTransferService"
+            android:label="TCPService">
+            <intent-filter>
+                <action android:name="tuya.intent.action.tcp" />
+
+                <category android:name="tuya" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.tuya.smart.mqtt.MqttService"
+            android:stopWithTask="true" />
     </application>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 网络 -->
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        android:required="false" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:required="false" /> <!-- added from 2.7.2 -->
+    <uses-permission
+        android:name="android.permission.WAKE_LOCK"
+        android:required="false" />
+
+    <uses-permission
+        android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"
+        android:required="false" />
 
 </manifest>

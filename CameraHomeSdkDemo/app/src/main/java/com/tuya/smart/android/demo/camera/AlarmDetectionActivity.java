@@ -1,5 +1,6 @@
 package com.tuya.smart.android.demo.camera;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -170,6 +171,19 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
             @Override
             public void onLongClick(CameraMessageBean o) {
                 deleteCameraMessageClassify(o);
+            }
+
+            @Override
+            public void onItemClick(CameraMessageBean o) {
+                Intent intent = new Intent(AlarmDetectionActivity.this,CameraCloudVideoActivity.class);
+                String attachVideo = o.getAttachVideos()[0];
+                String playUrl = attachVideo.substring(0, attachVideo.lastIndexOf('@'));
+                String encryptKey = attachVideo.substring(attachVideo.lastIndexOf('@') + 1);
+                intent.putExtra("playUrl",playUrl);
+
+                intent.putExtra("encryptKey",encryptKey);
+
+                startActivity(intent);
             }
         });
         queryRv.setAdapter(adapter);

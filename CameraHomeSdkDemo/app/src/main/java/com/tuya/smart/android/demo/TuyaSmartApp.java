@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.login.activity.LoginActivity;
+import com.tuya.smart.android.demo.utils.FrescoManager;
 import com.tuya.smart.api.SmartInitializer;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
 import com.tuya.smart.sdk.TuyaSdk;
@@ -37,6 +40,7 @@ public class TuyaSmartApp extends MultiDexApplication {
                 startActivity(intent);
             }
         });
+        FrescoManager.initFresco(this);
         TuyaSdk.setDebugMode(true);
     }
 
