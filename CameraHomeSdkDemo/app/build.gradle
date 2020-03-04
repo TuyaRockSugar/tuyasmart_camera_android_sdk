@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     // tuya camera module
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.14.4r134'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.15.0-SNAPSHOT'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.14.3r133'
