@@ -68,7 +68,7 @@ Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/
 
 ## Update log
 - 2019.11.15
-  - Update SDK (base 3.13.0r129)
+  - Update SDK (base 3.13.0r129)，ffmpeg 4.1.4
   - Update SDK Demo
 - 2019.10.8
   - Update SDK（ base 3.12.6r125）
