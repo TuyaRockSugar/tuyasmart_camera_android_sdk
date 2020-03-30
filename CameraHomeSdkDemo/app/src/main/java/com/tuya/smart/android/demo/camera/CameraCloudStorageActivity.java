@@ -295,7 +295,7 @@ public class CameraCloudStorageActivity extends AppCompatActivity implements OnP
     @Override
     public void getCloudConfigDataTags(String config) {
         //获取云存储 对应的配置信息，需要传入sdk进行鉴权 ，getTimeLineInfoByTimeSlice
-        cloudCamera.configCloudDataTags(config, new OperationDelegateCallBack() {
+        cloudCamera.configCloudDataTagsV1(config, new OperationDelegateCallBack() {
 
             @Override
             public void onSuccess(int i, int i1, String s) {

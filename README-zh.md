@@ -67,7 +67,7 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 
 ## 更新日志
 - 2019.11.15
-    - 更新sdk(版本 3.13.0r129)
+    - 更新sdk(版本 3.13.0r129)，对应的ffmpeg是4.1.4版本
     - 更新sdk demo
 - 2019.10.8
     - 更新sdk（版本 3.12.6r125）
