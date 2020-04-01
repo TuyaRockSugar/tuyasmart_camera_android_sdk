@@ -23,38 +23,72 @@
 
 ```java
 
-allprojects {
-    repositories {
-        ...
-        maven {
-            url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
-        }
-        maven { url 'https://jitpack.io' }
-    }
-}
+ buildscript {
+
+     repositories {
+         ...
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-releases/'
+         }
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-snapshots/'
+         }
+     }
+     dependencies {
+         classpath 'com.android.tools.build:gradle:3.1.4'
+         classpath 'com.tuya.android.module:tymodule-config:0.5.1'
+         // NOTE: Do not place your application dependencies here; they belong
+         // in the individual module build.gradle files
+     }
+ }
+
+ allprojects {
+     repositories {
+         ...
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-releases/'
+         }
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-snapshots/'
+         }
+     }
+ }
 
 ```
 
 - 在模块的build.gradle中添加如下代码:
 
 ```java
-dependencies {
-    ...
-    // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.11.1r119.h2'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.13.0r129'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.11.0r119'
+apply plugin: 'tymodule-config'
 
-    implementation 'com.tuya.smart:tuyasmart-tuyaHybridContainer:1.0.0'
-    implementation 'com.github.wendux:DSBridge-Android:3.0-SNAPSHOT'
-    
-    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.11.0r119'
+defaultConfig {
+     ndk {
+         abiFilters "armeabi-v7a","arm64-v8a"
+     }
+  }
+     dependencies {
+         implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+         implementation 'com.alibaba:fastjson:1.1.67.android'
+         implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.3'
+         implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
 
-    //not required Compatible with older versions
-    implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
+         // required tuya home sdk
+         implementation 'com.tuya.smart:tuyasmart:3.12.4'
 
-    implementation 'com.tuya.smart:tuyasmart:3.12.4'
-}
+         // tuya camera module
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.14.4r134'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r128'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
+         implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.14.3r133'
+
+     }
+
+ repositories {
+     mavenLocal()
+     jcenter()
+     google()
+ }
 ```
 
 AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.android.com/studio/)
@@ -66,6 +100,10 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 更多请参考: [涂鸦智能摄像机 Android SDK使用说明](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/zh-hans/)
 
 ## 更新日志
+- 2020.3.31
+    - 更新底层库，修复armabi消息中心视频播放问题
+- 2020.3.4
+    - 更新sdk（版本 3.15.0r135），消息中心多媒体预览（云存储视频播放）
 - 2019.11.15
     - 更新sdk(版本 3.13.0r129)，对应的ffmpeg是4.1.4版本
     - 更新sdk demo
