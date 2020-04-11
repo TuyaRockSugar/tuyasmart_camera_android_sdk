@@ -21,42 +21,70 @@ Tuya Smart Camera SDK provides the interface package for the communication with 
 add the following line to your project build.gradle:
 
 ```gradle
-  allprojects {
-    repositories {
-        ...
-        maven {
-            url 'https://raw.githubusercontent.com/TuyaInc/mavenrepo/master/releases'
-        }
-        maven { url 'https://jitpack.io' }
-    }
-}
+  buildscript {
+
+     repositories {
+         ...
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-releases/'
+         }
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-snapshots/'
+         }
+     }
+     dependencies {
+         classpath 'com.android.tools.build:gradle:3.1.4'
+         classpath 'com.tuya.android.module:tymodule-config:0.5.1'
+         // NOTE: Do not place your application dependencies here; they belong
+         // in the individual module build.gradle files
+     }
+ }
+
+ allprojects {
+     repositories {
+         ...
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-releases/'
+         }
+         maven {
+             url 'https://maven-other.tuya.com/repository/maven-snapshots/'
+         }
+     }
+ }
 ```
 add the following line to your module build.gradle:
 
 ```gradle
-dependencies {
-    ...
-    // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.14.4r134'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r128'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
-    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.14.3r133'
+apply plugin: 'tymodule-config'
 
-    //not required Compatible with older versions
-    implementation "com.tuya.smart:tuyaCamera:3.11.0r119h2"
+defaultConfig {
+     ndk {
+         abiFilters "armeabi-v7a","arm64-v8a"
+     }
+  }
+     dependencies {
+         implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+         implementation 'com.alibaba:fastjson:1.1.67.android'
+         implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.3'
+         implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
 
-    implementation 'com.tuya.smart:tuyasmart:3.12.4'
-    
-    //hybrid
-    implementation 'com.tuya.smart:tuyasmart-webcontainer:3.12.6r125'
-    implementation 'com.tuya.smart:tuyasmart-xplatformmanager:1.1.0'
-    implementation "com.tuya.smart:tuyasmart-base:3.13.0r127"
-    implementation 'com.tuya.smart:tuyasmart-appshell:3.10.0'
-    implementation "com.tuya.smart:tuyasmart-stencilwrapper:3.13.0r127"
-    implementation "com.tuya.smart:tuyasmart-framework:3.13.0r127-open-rc.1"
-    implementation 'com.tuya.smart:tuyasmart-uispecs:0.0.3'
-}
+         // required tuya home sdk
+         implementation 'com.tuya.smart:tuyasmart:3.12.4'
+
+         // tuya camera module
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.14.4r134'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r128'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
+         implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.14.3r133'
+
+     }
+
+ repositories {
+     mavenLocal()
+     jcenter()
+     google()
+ }
 ```
 For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](https://developer.android.com/studio/)
 
@@ -67,6 +95,10 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
 
 ## Update log
+- 2020.3.31
+  - Update SDK，modify messageCenter Video player bug on armabi .so
+- 2020.3.4
+  - Update SDK(base 3.15.0r135),add message center cloud strage video
 - 2019.11.15
   - Update SDK (base 3.13.0r129)，ffmpeg 4.1.4
   - Update SDK Demo
