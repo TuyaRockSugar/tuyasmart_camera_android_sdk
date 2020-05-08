@@ -27,9 +27,12 @@
 -keep class io.netty.** { *; }
 -dontwarn io.netty.**
 
-#mqtt
--keep class org.eclipse.paho.client.mqttv3.** { *; }
--dontwarn org.eclipse.paho.client.mqttv3.**
+##mqtt
+#-keep class org.eclipse.paho.client.mqttv3.** { *; }
+#-dontwarn org.eclipse.paho.client.mqttv3.**
+ #mqtt
+ -keep class com.tuya.smart.mqttclient.mqttv3.** { *; }
+ -dontwarn com.tuya.smart.mqttclient.mqttv3.**
 
 -dontwarn okio.**
 -dontwarn rx.**

@@ -168,6 +168,11 @@ public class GroupDpSendPresenter extends BasePresenter implements IGroupListene
     }
 
     @Override
+    public void onDpCodeUpdate(long groupId, Map<String, Object> dpCodeMap) {
+
+    }
+
+    @Override
     public void onGroupInfoUpdate(long groupId) {
 
     }
