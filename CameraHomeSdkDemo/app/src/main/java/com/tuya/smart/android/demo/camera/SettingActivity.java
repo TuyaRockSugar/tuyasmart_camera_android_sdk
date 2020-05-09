@@ -1,12 +1,14 @@
 package com.tuya.smart.android.demo.camera;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.R;
+import com.tuya.smart.sdk.api.IDevListener;
 import com.tuyasmart.camera.devicecontrol.ITuyaCameraDevice;
 import com.tuyasmart.camera.devicecontrol.TuyaCameraDeviceControlSDK;
 import com.tuyasmart.camera.devicecontrol.api.ITuyaCameraDeviceControlCallback;
@@ -37,13 +39,23 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     private List<String> mData;
     ITuyaCameraDevice mTuyaCameraDevice;
+    private Toolbar toolbar;
     private TextView showQueryTxt;
     private TextView showPublishTxt;
+    private String devId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        toolbar = findViewById(R.id.toolbar_view);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         showQueryTxt = findViewById(R.id.tv_show_query);
         showPublishTxt = findViewById(R.id.tv_show_publish);
         findViewById(R.id.btn_resetore).setOnClickListener(this);
@@ -61,12 +73,42 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.btn_wireless_electricity).setOnClickListener(this);
         initData();
         initDeviceControl();
+        initAllDevicePointControl();
     }
 
     private void initDeviceControl() {
-        Intent intent = getIntent();
-        String devId = intent.getStringExtra("devId");
+        devId = getIntent().getStringExtra("devId");
         mTuyaCameraDevice = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
+    }
+
+    private void initAllDevicePointControl() {
+        mTuyaCameraDevice.setRegisterDevListener(new IDevListener()  {
+            @Override
+            public void onDpUpdate(String s, String s1) {
+                L.d("TuyaHomeSdk", "onDpUpdate devId:" + s + "  dps " + s1);
+                //此处监听所有dp点的信息
+            }
+
+            @Override
+            public void onRemoved(String s) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, boolean b) {
+
+            }
+
+            @Override
+            public void onNetworkStatusChanged(String s, boolean b) {
+
+            }
+
+            @Override
+            public void onDevInfoUpdate(String s) {
+
+            }
+        });
     }
 
     private void initData() {
@@ -77,8 +119,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mData.add(DpBasicOSD.ID);
         mData.add(DpBasicIndicator.ID);
         mData.add(DpBasicPrivate.ID);
-
-
     }
 
 
@@ -286,7 +326,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 }
             });
             mTuyaCameraDevice.publishCameraDps(DpWirelessPowermode.ID, null);
-        } else if (R.id.btn_resetore == v.getId()){
+        } else if (R.id.btn_resetore == v.getId()) {
             mTuyaCameraDevice.publishCameraDps(DpRestore.ID, true);
         }
     }

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,8 +26,11 @@ import com.tuya.smart.android.network.http.BusinessResponse;
 import com.tuya.smart.ipc.messagecenter.bean.CameraMessageBean;
 import com.tuya.smart.ipc.messagecenter.bean.CameraMessageClassifyBean;
 import com.tuya.smart.ipc.messagecenter.business.CameraMessageBusiness;
+import com.tuya.smart.utils.ToastUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -45,7 +49,7 @@ import static com.tuya.smart.android.demo.utils.Constants.MSG_GET_ALARM_DETECTIO
  * 2019-11-19
  **/
 
-public class AlarmDetectionActivity extends AppCompatActivity implements  View.OnClickListener{
+public class AlarmDetectionActivity extends AppCompatActivity implements View.OnClickListener {
     private String devId;
     private List<CameraMessageBean> mWaitingDeleteCameraMessageList;
     protected List<CameraMessageBean> mCameraMessageList;
@@ -55,7 +59,7 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     private RecyclerView queryRv;
     private Button queryBtn;
     private AlarmDetectionAdapter adapter;
-    private int day,year,month;
+    private int day, year, month;
     private int offset = 0;
 
     private Handler mHandler = new Handler() {
@@ -73,6 +77,8 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
                     break;
                 case MSG_DELETE_ALARM_DETECTION:
                     handleDeleteAlarmDetection();
+                    break;
+                default:
                     break;
             }
             super.handleMessage(msg);
@@ -95,45 +101,45 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     }
 
     private void handlAlarmDetectionDateSuccess(Message msg) {
-            if (null != messageBusiness){
-                long time = DateUtils.getCurrentTime(year, month, day);
-                long startTime = DateUtils.getTodayStart(time);
-                long endTime = DateUtils.getTodayEnd(time) - 1L;
-                JSONObject object = new JSONObject();
-                object.put("msgSrcId", devId);
-                object.put("startTime", startTime);
-                object.put("endTime", endTime);
-                object.put("msgType", 4);
-                object.put("limit", 30);
-                object.put("keepOrig", true);
-                object.put("offset", offset);
-                if (null != selectClassify) {
-                    object.put("msgCodes", selectClassify.getMsgCode());
+        if (null != messageBusiness) {
+            long time = DateUtils.getCurrentTime(year, month, day);
+            long startTime = DateUtils.getTodayStart(time);
+            long endTime = DateUtils.getTodayEnd(time) - 1L;
+            JSONObject object = new JSONObject();
+            object.put("msgSrcId", devId);
+            object.put("startTime", startTime);
+            object.put("endTime", endTime);
+            object.put("msgType", 4);
+            object.put("limit", 30);
+            object.put("keepOrig", true);
+            object.put("offset", offset);
+            if (null != selectClassify) {
+                object.put("msgCodes", selectClassify.getMsgCode());
+            }
+            messageBusiness.getAlarmDetectionMessageList(object.toJSONString(), new Business.ResultListener<JSONObject>() {
+                @Override
+                public void onFailure(BusinessResponse businessResponse, JSONObject jsonObject, String s) {
+                    mHandler.sendMessage(MessageUtil.getMessage(MSG_GET_ALARM_DETECTION, ARG1_OPERATE_FAIL));
                 }
-                messageBusiness.getAlarmDetectionMessageList(object.toJSONString(), new Business.ResultListener<JSONObject>() {
-                    @Override
-                    public void onFailure(BusinessResponse businessResponse, JSONObject jsonObject, String s) {
+
+                @Override
+                public void onSuccess(BusinessResponse businessResponse, JSONObject jsonObject, String s) {
+                    List<CameraMessageBean> msgList;
+                    try {
+                        msgList = JSONArray.parseArray(jsonObject.getString("datas"), CameraMessageBean.class);
+                    } catch (Exception e) {
+                        msgList = null;
+                    }
+                    if (msgList != null) {
+                        offset += msgList.size();
+                        mCameraMessageList = msgList;
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_GET_ALARM_DETECTION, ARG1_OPERATE_SUCCESS));
+                    } else {
                         mHandler.sendMessage(MessageUtil.getMessage(MSG_GET_ALARM_DETECTION, ARG1_OPERATE_FAIL));
                     }
-
-                    @Override
-                    public void onSuccess(BusinessResponse businessResponse, JSONObject jsonObject, String s) {
-                        List<CameraMessageBean> msgList;
-                        try {
-                            msgList = JSONArray.parseArray(jsonObject.getString("datas"), CameraMessageBean.class);
-                        } catch (Exception e) {
-                            msgList = null;
-                        }
-                        if (msgList != null) {
-                            offset += msgList.size();
-                            mCameraMessageList = msgList;
-                            mHandler.sendMessage(MessageUtil.getMessage(MSG_GET_ALARM_DETECTION, ARG1_OPERATE_SUCCESS));
-                        } else {
-                            mHandler.sendMessage(MessageUtil.getMessage(MSG_GET_ALARM_DETECTION, ARG1_OPERATE_FAIL));
-                        }
-                    }
-                });
-            }
+                }
+            });
+        }
     }
 
 
@@ -155,6 +161,10 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
         dateInputEdt = findViewById(R.id.date_input_edt);
         queryBtn = findViewById(R.id.query_btn);
         queryRv = findViewById(R.id.query_list);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date(System.currentTimeMillis());
+        dateInputEdt.setHint(simpleDateFormat.format(date));
+        dateInputEdt.setText(simpleDateFormat.format(date));
     }
 
     private void initData() {
@@ -175,13 +185,13 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
 
             @Override
             public void onItemClick(CameraMessageBean o) {
-                Intent intent = new Intent(AlarmDetectionActivity.this,CameraCloudVideoActivity.class);
+                Intent intent = new Intent(AlarmDetectionActivity.this, CameraCloudVideoActivity.class);
                 String attachVideo = o.getAttachVideos()[0];
                 String playUrl = attachVideo.substring(0, attachVideo.lastIndexOf('@'));
                 String encryptKey = attachVideo.substring(attachVideo.lastIndexOf('@') + 1);
-                intent.putExtra("playUrl",playUrl);
+                intent.putExtra("playUrl", playUrl);
 
-                intent.putExtra("encryptKey",encryptKey);
+                intent.putExtra("encryptKey", encryptKey);
 
                 startActivity(intent);
             }
@@ -247,6 +257,10 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
 
     private void queryAlarmDetectionByMonth() {
         String inputStr = dateInputEdt.getText().toString();
+        if (TextUtils.isEmpty(inputStr)) {
+            ToastUtil.shortToast(this, "input query date");
+            return;
+        }
         String[] substring = inputStr.split("/");
         year = Integer.parseInt(substring[0]);
         month = Integer.parseInt(substring[1]);
@@ -264,7 +278,7 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
                     @Override
                     public void onSuccess(BusinessResponse businessResponse, JSONArray objects, String s) {
                         List<Integer> dates = JSONArray.parseArray(objects.toJSONString(), Integer.class);
-                        if (dates.size() > 0){
+                        if (dates.size() > 0) {
                             day = dates.get(0);
                         }
                         mHandler.sendEmptyMessage(ALARM_DETECTION_DATE_MONTH_SUCCESS);
@@ -275,6 +289,9 @@ public class AlarmDetectionActivity extends AppCompatActivity implements  View.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (null != mHandler) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
         if (null != messageBusiness) {
             messageBusiness.onDestroy();
         }

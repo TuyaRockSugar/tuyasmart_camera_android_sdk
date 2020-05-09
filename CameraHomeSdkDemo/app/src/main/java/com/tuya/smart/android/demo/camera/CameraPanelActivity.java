@@ -364,29 +364,31 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
                 configCameraBean = new ConfigCameraBean();
 
                 infoBean = cameraInfoBean;
-
-                mP2p3Id = infoBean.getId();
                 p2pType = infoBean.getP2pSpecifiedType();
-                p2pId = infoBean.getP2pId().split(",")[0];
-                p2pWd = infoBean.getPassword();
-                mInitStr = infoBean.getP2pConfig().getInitStr();
-                mP2pKey = infoBean.getP2pConfig().getP2pKey();
-                mInitStr += ":" + mP2pKey;
-                if (null != infoBean.getP2pConfig().getIces()) {
-                    token = infoBean.getP2pConfig().getIces().toString();
+                configCameraBean.setP2pType(p2pType);
+                if (P2P_2 == p2pType) {
+                    if (null != cameraInfoBean.getP2pId()) {
+                        p2pId = cameraInfoBean.getP2pId().split(",")[0];
+                        configCameraBean.setP2pId(p2pId);
+                    }
+                    mInitStr = infoBean.getP2pConfig().getInitStr();
+                    mP2pKey = infoBean.getP2pConfig().getP2pKey();
+                    mInitStr += ":" + mP2pKey;
+                    configCameraBean.setInitString(mInitStr);
+                }else if (P2P_4 == p2pType){
+                    mP2p3Id = infoBean.getId();
+                    configCameraBean.setP2pId(mP2p3Id);
+                    if (null != cameraInfoBean.getP2pConfig()) {
+                        String token = cameraInfoBean.getP2PConfigStr();
+                        configCameraBean.setToken(token);
+                    }
                 }
                 configCameraBean.setDevId(devId);
                 configCameraBean.setLocalKey(localKey);
-                configCameraBean.setInitString(mInitStr);
-                configCameraBean.setToken(token);
-                configCameraBean.setP2pType(p2pType);
                 configCameraBean.setLocalId(mlocalId);
+                p2pWd = infoBean.getPassword();
                 configCameraBean.setPassword(p2pWd);
-                if (P2P_2 == p2pType) {
-                    configCameraBean.setP2pId(p2pId);
-                }else if (P2P_4 == p2pType){
-                    configCameraBean.setP2pId(mP2p3Id);
-                }
+
                 initCameraView();
             }
         });

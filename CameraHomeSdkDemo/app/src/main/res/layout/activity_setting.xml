@@ -8,6 +8,15 @@
     android:orientation="vertical"
     tools:context="com.tuya.smart.android.demo.camera.SettingActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_view"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical"
+        app:navigationIcon="@drawable/tysmart_back"
+        app:title="Set"
+        app:titleTextColor="@color/black" />
+
     <TextView
         android:id="@+id/tv_show_query"
         android:layout_width="match_parent"
