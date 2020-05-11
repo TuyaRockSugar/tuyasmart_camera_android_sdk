@@ -66,17 +66,20 @@ defaultConfig {
          implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
          implementation 'com.alibaba:fastjson:1.1.67.android'
          implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.3'
-         implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
+         // implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
 
          // required tuya home sdk
-         implementation 'com.tuya.smart:tuyasmart:3.12.4'
+         implementation 'com.tuya.smart:tuyasmart:3.17.0-beta1'
 
          // tuya camera module
          implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.14.4r134'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r128'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139'
+         implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
          implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
-         implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.14.3r133'
+         implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
+          //messge center imagepipeline 
+         implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
+         implementation 'com.facebook.fresco:fresco:1.3.0'
 
      }
 
@@ -95,6 +98,10 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
 
 ## Update log
+- 2020.5.9
+  - Update SDK(base 3.17.0r139),fix audio problems (switch definition sound off) and .so crash, improve stability;
+  - Add reporting callback of all DP point operations of the device
+  - Update Demo
 - 2020.3.31
   - Update SDK，modify messageCenter Video player bug on armabi .so
 - 2020.3.4
