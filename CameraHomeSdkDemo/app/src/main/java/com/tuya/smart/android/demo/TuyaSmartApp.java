@@ -29,7 +29,7 @@ public class TuyaSmartApp extends MultiDexApplication {
         L.d(TAG, "onCreate " + getProcessName(this));
         L.setSendLogOn(true);
         TuyaWrapper.init(this);
-        TuyaHomeSdk.init(this);
+        TuyaHomeSdk.init(this, BuildConfig.APP_KEY, BuildConfig.APP_SERECT);
         TuyaHomeSdk.setOnNeedLoginListener(new INeedLoginListener() {
             @Override
             public void onNeedLogin(Context context) {
