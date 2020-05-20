@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.family.FamilyManager;
+import com.tuya.smart.camera.camerasdk.typlayer.callback.IRegistorIOTCListener;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationCallBack;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
@@ -21,9 +22,11 @@ import com.tuya.smart.camera.middleware.cloud.ICloudManagerCallback;
 import com.tuya.smart.camera.middleware.cloud.bean.CloudDayBean;
 import com.tuya.smart.camera.middleware.cloud.bean.TimePieceBean;
 import com.tuya.smart.camera.middleware.cloud.bean.TimeRangeBean;
+import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
 import com.tuya.smart.camera.utils.IPCCameraUtils;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
 import com.tuya.smart.jsbridge.base.webview.WebViewActivity;
+import com.tuyasmart.camera.devicecontrol.model.PTZDirection;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -33,13 +36,14 @@ import java.util.List;
 import java.util.TimeZone;
 
 import static com.tuya.smart.android.demo.device.common.CommonDeviceDebugPresenter.INTENT_DEVID;
+import static com.tuya.smart.android.demo.device.common.CommonDeviceDebugPresenter.INTENT_SDK_POROVIDER;
 
 /**
  * @author surgar
  */
-public class CameraCloudStorageActivity extends AppCompatActivity implements OnP2PCameraListener, ICloudCacheManagerCallback {
+public class CameraCloudStorageActivity extends AppCompatActivity implements OnP2PCameraListener, ICloudCacheManagerCallback, TuyaCameraView.CreateVideoViewCallback {
 
-    private Monitor mVideoView;
+    private TuyaCameraView mVideoView;
 
     private String devId;
     private CameraCloudSDK cameraCloudSDK;
@@ -49,19 +53,23 @@ public class CameraCloudStorageActivity extends AppCompatActivity implements OnP
     private String mEncryptKey = "";
     private String mAuthorityJson = "";
     private int soundState;
+    private int sdkProvider;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_cloud_storage);
 
-        mVideoView = findViewById(R.id.camera_cloud_video_view);
-
         devId = getIntent().getStringExtra(INTENT_DEVID);
+        sdkProvider = getIntent().getIntExtra(INTENT_SDK_POROVIDER, -1);
 
         cameraCloudSDK = new CameraCloudSDK();
-
         cloudCamera = new TYCloudCamera();
+
+        mVideoView = findViewById(R.id.camera_cloud_video_view);
+        mVideoView.setCameraViewCallback(this);
+        mVideoView.createVideoView(sdkProvider);
+
         String cachePath = getApplication().getCacheDir().getPath();
         cloudCamera.createCloudDevice(cachePath, devId);
 
@@ -208,7 +216,9 @@ public class CameraCloudStorageActivity extends AppCompatActivity implements OnP
         mVideoView.onResume();
         if (null != cloudCamera) {
             cloudCamera.registorOnP2PCameraListener(this);
-            cloudCamera.generateCloudCameraView(mVideoView);
+            if (mVideoView.createdView() instanceof IRegistorIOTCListener) {
+                cloudCamera.generateCloudCameraView((IRegistorIOTCListener) mVideoView.createdView());
+            }
         }
     }
 
@@ -474,4 +484,25 @@ public class CameraCloudStorageActivity extends AppCompatActivity implements OnP
         cloudCamera.getCloudMute();
     }
 
+    @Override
+    public void onCreated(Object o) {
+        if (o instanceof IRegistorIOTCListener) {
+            cloudCamera.generateCloudCameraView((IRegistorIOTCListener) o);
+        }
+    }
+
+    @Override
+    public void videoViewClick() {
+
+    }
+
+    @Override
+    public void startCameraMove(PTZDirection ptzDirection) {
+
+    }
+
+    @Override
+    public void onActionUP() {
+
+    }
 }

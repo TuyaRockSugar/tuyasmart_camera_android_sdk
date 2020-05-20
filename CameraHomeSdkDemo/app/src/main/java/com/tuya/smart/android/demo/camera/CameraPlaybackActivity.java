@@ -30,10 +30,14 @@ import com.tuya.smart.camera.ipccamerasdk.bean.MonthDays;
 import com.tuya.smart.camera.ipccamerasdk.monitor.Monitor;
 import com.tuya.smart.camera.ipccamerasdk.p2p.ICameraP2P;
 import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
+import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
 import com.tuya.smart.camera.utils.AudioUtils;
+import com.tuyasmart.camera.devicecontrol.model.PTZDirection;
 
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +53,11 @@ import static com.tuya.smart.android.demo.utils.Constants.MSG_MUTE;
 /**
  * @author chenbj
  */
-public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCameraListener, View.OnClickListener {
+public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCameraListener, View.OnClickListener, TuyaCameraView.CreateVideoViewCallback {
 
     private static final String TAG = "CameraPlaybackActivity";
     private Toolbar toolbar;
-    private Monitor mVideoView;
+    private TuyaCameraView mVideoView;
     private ImageView muteImg;
     private EditText dateInputEdt;
     private RecyclerView queryRv;
@@ -99,7 +103,13 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
             ;
             queryDateList.clear();
             //Timepieces with data for the query day
-            queryDateList.addAll((mBackDataDayCache.get(mCameraP2P.getDayKey())));
+            List<TimePieceBean> timePieceBeans = mBackDataDayCache.get(mCameraP2P.getDayKey());
+            if (timePieceBeans != null) {
+                queryDateList.addAll(timePieceBeans);
+            } else {
+                showErrorToast();
+            }
+
             adapter.notifyDataSetChanged();
         } else {
 
@@ -206,7 +216,9 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
         p2pWd = getIntent().getStringExtra("p2pWd");
         localKey = getIntent().getStringExtra("localKey");
         p2pType = getIntent().getIntExtra("p2pType", 1);
-//        mVideoView.createVideoView(p2pType, mIsRunSoft);
+
+        mVideoView.createVideoView(p2pType);
+        mVideoView.setCameraViewCallback(this);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         queryRv.setLayoutManager(mLayoutManager);
@@ -220,7 +232,9 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
         mCameraP2P.connectPlayback();
 
         muteImg.setSelected(true);
-        dateInputEdt.setText("2019/6/29");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date(System.currentTimeMillis());
+        dateInputEdt.setText(simpleDateFormat.format(date));
     }
 
     private void initListener() {
@@ -423,7 +437,7 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
         if (null != mCameraP2P) {
             AudioUtils.getModel(this);
             mCameraP2P.registorOnP2PCameraListener(this);
-            mCameraP2P.generateCameraView(mVideoView);
+            mCameraP2P.generateCameraView(mVideoView.createdView());
         }
     }
 
@@ -456,8 +470,8 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
     }
 
     @Override
-    public void onReceiveFrameYUVData(int sessionId, ByteBuffer y, ByteBuffer u, ByteBuffer v, int width, int height, int nFrameRate, int nIsKeyFrame, long timestamp, long nProgress, long nDuration, Object camera) {
-        mVideoView.receiveFrameYUVData(y, u, v, width, height);
+    public void onReceiveFrameYUVData(int i, ByteBuffer byteBuffer, ByteBuffer byteBuffer1, ByteBuffer byteBuffer2, int i1, int i2, int i3, int i4, long l, long l1, long l2, Object o) {
+
     }
 
     @Override
@@ -467,6 +481,26 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
 
     @Override
     public void onReceiveSpeakerEchoData(ByteBuffer byteBuffer, int i) {
+
+    }
+
+    @Override
+    public void onCreated(Object o) {
+        mCameraP2P.generateCameraView(mVideoView.createdView());
+    }
+
+    @Override
+    public void videoViewClick() {
+
+    }
+
+    @Override
+    public void startCameraMove(PTZDirection ptzDirection) {
+
+    }
+
+    @Override
+    public void onActionUP() {
 
     }
 }
