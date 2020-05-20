@@ -62,35 +62,40 @@
 apply plugin: 'tymodule-config'
 
 defaultConfig {
-     ndk {
-         abiFilters "armeabi-v7a","arm64-v8a"
-     }
-  }
-     dependencies {
-         implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-         implementation 'com.alibaba:fastjson:1.1.67.android'
-         implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.3'
-         // implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
+    ndk {
+       abiFilters "armeabi-v7a","arm64-v8a"
+    }
+}   
 
-         // required tuya home sdk
-         implementation 'com.tuya.smart:tuyasmart:3.17.0-beta1'
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation 'com.alibaba:fastjson:1.1.67.android'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.3'
+    // implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
 
-         // tuya camera module
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
-         implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
-          //消息中心图片解密组件
-         implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
-         implementation 'com.facebook.fresco:fresco:1.3.0'
-     }
+    // required tuya home sdk
+    implementation 'com.tuya.smart:tuyasmart:3.17.0-beta1'
 
- repositories {
-     mavenLocal()
-     jcenter()
-     google()
- }
+    // tuya camera module
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
+    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
+
+    // 用于兼容 tutk 设备
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h3'
+
+    //消息中心图片解密组件
+    implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
+    implementation 'com.facebook.fresco:fresco:1.3.0'
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    google()
+}
 ```
 
 AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.android.com/studio/)
@@ -102,6 +107,9 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 更多请参考: [涂鸦智能摄像机 Android SDK使用说明](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/zh-hans/)
 
 ## 更新日志
+- 2020.5.20
+   - 更新 sdk，使用新的播放器用于支持老设备（tutk）
+   - 更新优化 demo
 - 2020.5.9
    - 更新 sdk（版本 3.17.0r139），修复音频问题（切换清晰度声音关闭），so崩溃问题，提升sdk稳定性；增加设备所有dp点操作的上报回调
    - 更新优化 demo
