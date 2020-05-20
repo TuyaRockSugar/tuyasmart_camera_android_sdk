@@ -206,12 +206,6 @@
         <activity
             android:name=".camera.CameraCloudStorageActivity"
             android:screenOrientation="portrait" />
-        <meta-data
-            android:name="TUYA_SMART_APPKEY"
-            android:value="3qxjvks9rvnns8rc5aaj" />
-        <meta-data
-            android:name="TUYA_SMART_SECRET"
-            android:value="7wvg7vmhfhj3fkx9r4x9rn7f9xxd9d9q" />
         <service
             android:name="com.tuya.smart.android.hardware.service.GwBroadcastMonitorService"
             android:exported="true"

@@ -16,6 +16,11 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        buildConfigField("String", "APP_KEY", properties.getProperty('appkey'))
+        buildConfigField("String", "APP_SERECT", properties.getProperty('appSerect'))
     }
     buildTypes {
         release {
@@ -84,11 +89,14 @@ dependencies {
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
     // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
+
+    // support tutk
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h3'
 
     //消息中心图片解密组件
     implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
