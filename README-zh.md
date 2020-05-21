@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
 
     // 用于兼容 tutk 设备
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h3'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h4'
 
     //消息中心图片解密组件
     implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
