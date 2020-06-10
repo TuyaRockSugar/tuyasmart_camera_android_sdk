@@ -58,36 +58,40 @@ add the following line to your module build.gradle:
 apply plugin: 'tymodule-config'
 
 defaultConfig {
-     ndk {
-         abiFilters "armeabi-v7a","arm64-v8a"
-     }
-  }
-     dependencies {
-         implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-         implementation 'com.alibaba:fastjson:1.1.67.android'
-         implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.3'
-         // implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
+    ndk {
+       abiFilters "armeabi-v7a","arm64-v8a"
+    }
+}   
 
-         // required tuya home sdk
-         implementation 'com.tuya.smart:tuyasmart:3.17.0-beta1'
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation 'com.alibaba:fastjson:1.1.67.android'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.3'
+    // implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
 
-         // tuya camera module
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.14.3r133'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
-         implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
-         implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
-          //messge center imagepipeline 
-         implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
-         implementation 'com.facebook.fresco:fresco:1.3.0'
+    // required tuya home sdk
+    implementation 'com.tuya.smart:tuyasmart:3.17.0-beta1'
 
-     }
+    // tuya camera module
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
+    implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
 
- repositories {
-     mavenLocal()
-     jcenter()
-     google()
- }
+    // support tutk
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h4'
+
+    // messge center imagepipeline
+    implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
+    implementation 'com.facebook.fresco:fresco:1.3.0'
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    google()
+}
 ```
 For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](https://developer.android.com/studio/)
 
@@ -98,6 +102,9 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
 
 ## Update log
+- 2020.5.20
+  - Update SDK, use new player to support old devices (tutk)
+  - Update Demo
 - 2020.5.9
   - Update SDK(base 3.17.0r139),fix audio problems (switch definition sound off) and .so crash, improve stability;
   - Add reporting callback of all DP point operations of the device
@@ -119,6 +126,5 @@ Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/
   - New SDK code API have changed.
   - To be compatible with the old version of sdk, use tuyaCamera: 3.11.0r119h2.
   - Suggestions for old API to upgrade New API
-
 - 2019.6.11
   - Support arm64

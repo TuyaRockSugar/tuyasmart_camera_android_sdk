@@ -23,19 +23,20 @@ import com.tuya.smart.android.demo.base.utils.MessageUtil;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
 import com.tuya.smart.android.demo.device.common.CommonDeviceDebugPresenter;
 import com.tuya.smart.android.demo.utils.Constants;
-import com.tuya.smart.android.network.Business;
 import com.tuya.smart.android.network.http.BusinessResponse;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OnRenderDirectionCallback;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
-import com.tuya.smart.camera.ipccamerasdk.bean.CameraInfoBean;
 import com.tuya.smart.camera.ipccamerasdk.bean.ConfigCameraBean;
-import com.tuya.smart.camera.ipccamerasdk.business.CameraBusiness;
 import com.tuya.smart.camera.ipccamerasdk.monitor.Monitor;
 import com.tuya.smart.camera.ipccamerasdk.p2p.ICameraP2P;
+import com.tuya.smart.camera.middleware.p2p.ICameraConfig;
+import com.tuya.smart.camera.middleware.p2p.ITuyaSmartCameraP2P;
+import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2P;
 import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
+import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
+import com.tuya.smart.camera.middleware.widget.TuyaMonitorView;
 import com.tuya.smart.camera.utils.AudioUtils;
-import com.tuya.smart.home.sdk.TuyaHomeSdk;
 import com.tuyasmart.camera.devicecontrol.ITuyaCameraDevice;
 import com.tuyasmart.camera.devicecontrol.TuyaCameraDeviceControlSDK;
 import com.tuyasmart.camera.devicecontrol.bean.DpPTZControl;
@@ -62,17 +63,16 @@ import static com.tuya.smart.android.demo.utils.Constants.MSG_TALK_BACK_OVER;
 import static com.tuya.smart.android.demo.utils.Constants.MSG_VIDEO_RECORD_BEGIN;
 import static com.tuya.smart.android.demo.utils.Constants.MSG_VIDEO_RECORD_FAIL;
 import static com.tuya.smart.android.demo.utils.Constants.MSG_VIDEO_RECORD_OVER;
-import static com.tuya.smart.camera.ipccamerasdk.utils.CameraConstant.P2P_2;
-import static com.tuya.smart.camera.ipccamerasdk.utils.CameraConstant.P2P_4;
+import static com.tuya.smart.camera.ipccamerasdk.utils.CameraConstant.SDK_PROVIDER_V1;
 
 /**
  * @author chenbj
  */
-public class CameraPanelActivity extends AppCompatActivity implements OnP2PCameraListener, View.OnClickListener {
+public class CameraPanelActivity extends AppCompatActivity implements OnP2PCameraListener, View.OnClickListener, TuyaCameraView.CreateVideoViewCallback {
 
     private static final String TAG = "CameraPanelActivity";
     private Toolbar toolbar;
-    private Monitor mVideoView;
+    private TuyaCameraView mVideoView;
     private ImageView muteImg;
     private TextView qualityTv;
     private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt, cloudStorageTxt,messageCenterTxt;
@@ -80,7 +80,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
     private ICameraP2P mCameraP2P;
     private static final int ASPECT_RATIO_WIDTH = 9;
     private static final int ASPECT_RATIO_HEIGHT = 16;
-    private String p2pId = "", mP2p3Id = null, token = null, p2pWd = "", mlocalId = "", localKey = "", mInitStr = "EEGDFHBAKJINGGJKFAHAFKFIGINJGFMEHIEOAACPBFIDKMLKCMBPCLONHCKGJGKHBEMOLNCGPAMC", mP2pKey = "nVpkO1Xqbojgr4Ks";
+    private String p2pId = "", p2pWd = "", localKey = "", mInitStr = "EEGDFHBAKJINGGJKFAHAFKFIGINJGFMEHIEOAACPBFIDKMLKCMBPCLONHCKGJGKHBEMOLNCGPAMC", mP2pKey = "nVpkO1Xqbojgr4Ks";
     private boolean isSpeaking = false;
     private boolean isRecording = false;
     private boolean isPlay = false;
@@ -91,12 +91,10 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
 
     private boolean mIsRunSoft;
     private int sdkProvider;
-    private int p2pType = -1;
 
     private String devId;
-    private CameraInfoBean infoBean;
     private ITuyaCameraDevice mDeviceControl;
-    private ConfigCameraBean configCameraBean;
+    private ITuyaSmartCameraP2P mSmartCameraP2P;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -217,7 +215,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         initData();
         initListener();
 
-        if(mDeviceControl.isSupportCameraDps(DpPTZControl.ID)) {
+        if(mDeviceControl != null && mDeviceControl.isSupportCameraDps(DpPTZControl.ID)) {
             mVideoView.setOnRenderDirectionCallback(new OnRenderDirectionCallback() {
 
                 @Override
@@ -288,21 +286,23 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         devId = getIntent().getStringExtra(INTENT_DEVID);
         sdkProvider = getIntent().getIntExtra(INTENT_SDK_POROVIDER, -1);
         mIsRunSoft = getIntent().getBooleanExtra("isRunsoft", true);
-        if (null != TuyaHomeSdk.getUserInstance().getUser()) {
-            mlocalId = TuyaHomeSdk.getUserInstance().getUser().getUid();
-        }
         mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(sdkProvider);
+        mVideoView.setCameraViewCallback(this);
+        mVideoView.createVideoView(sdkProvider);
         if (null == mCameraP2P) {
-            ToastUtil.shortToast(CameraPanelActivity.this, "device is not support!");
+            showNotSupportToast();
         }else{
 //            mCameraP2P.isEchoData(true);
+            mDeviceControl = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
+            getApi();
         }
-
-        mDeviceControl = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
-        getApi();
     }
 
-    private void initCameraView() {
+    private void showNotSupportToast() {
+        ToastUtil.shortToast(CameraPanelActivity.this, "device is not support!");
+    }
+
+    private void initCameraView(ConfigCameraBean bean) {
         mCameraP2P.createDevice(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
@@ -313,8 +313,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
             public void onFailure(int sessionId, int requestId, int errCode) {
                 mHandler.sendMessage(MessageUtil.getMessage(MSG_CREATE_DEVICE, ARG1_OPERATE_FAIL));
             }
-        },configCameraBean);
-
+        },bean);
     }
 
 
@@ -343,7 +342,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
 
             @Override
             public void onFailure(int sessionId, int requestId, int errCode) {
-                Log.d(TAG, "start preview onFailure");
+                Log.d(TAG, "start preview onFailure, errCode: " + errCode);
                 isPlay = false;
             }
         });
@@ -352,49 +351,25 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
     private void getApi() {
         Map postData = new HashMap();
         postData.put("devId", devId);
-        CameraBusiness cameraBusiness = new CameraBusiness();
-        cameraBusiness.requestCameraInfo(devId, new Business.ResultListener<CameraInfoBean>() {
+        mSmartCameraP2P = new TuyaSmartCameraP2P();
+        mSmartCameraP2P.requestCameraInfo(devId, new ICameraConfig() {
             @Override
-            public void onFailure(BusinessResponse businessResponse, CameraInfoBean cameraInfoBean, String s) {
+            public void onFailure(BusinessResponse var1, ConfigCameraBean var2, String var3) {
                 ToastUtil.shortToast(CameraPanelActivity.this, "get cameraInfo failed");
             }
 
             @Override
-            public void onSuccess(BusinessResponse businessResponse, CameraInfoBean cameraInfoBean, String s) {
-                configCameraBean = new ConfigCameraBean();
-
-                infoBean = cameraInfoBean;
-                p2pType = infoBean.getP2pSpecifiedType();
-                configCameraBean.setP2pType(p2pType);
-                if (P2P_2 == p2pType) {
-                    if (null != cameraInfoBean.getP2pId()) {
-                        p2pId = cameraInfoBean.getP2pId().split(",")[0];
-                        configCameraBean.setP2pId(p2pId);
-                    }
-                    mInitStr = infoBean.getP2pConfig().getInitStr();
-                    mP2pKey = infoBean.getP2pConfig().getP2pKey();
-                    mInitStr += ":" + mP2pKey;
-                    configCameraBean.setInitString(mInitStr);
-                }else if (P2P_4 == p2pType){
-                    mP2p3Id = infoBean.getId();
-                    configCameraBean.setP2pId(mP2p3Id);
-                    if (null != cameraInfoBean.getP2pConfig()) {
-                        String token = cameraInfoBean.getP2PConfigStr();
-                        configCameraBean.setToken(token);
-                    }
-                }
-                configCameraBean.setDevId(devId);
-                configCameraBean.setLocalKey(localKey);
-                configCameraBean.setLocalId(mlocalId);
-                p2pWd = infoBean.getPassword();
-                configCameraBean.setPassword(p2pWd);
-
-                initCameraView();
+            public void onSuccess(BusinessResponse var1, ConfigCameraBean var2, String var3) {
+                p2pWd = var2.getPassword();
+                p2pId = var2.getP2pId();
+                initCameraView(var2);
             }
         });
     }
 
     private void initListener() {
+        if (mCameraP2P == null) return;
+
         muteImg.setOnClickListener(this);
         qualityTv.setOnClickListener(this);
         speakTxt.setOnClickListener(this);
@@ -430,7 +405,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
                 intent.putExtra("p2pId", p2pId);
                 intent.putExtra("p2pWd", p2pWd);
                 intent.putExtra("localKey", localKey);
-                intent.putExtra("p2pType", p2pType);
+                intent.putExtra("p2pType", sdkProvider);
                 startActivity(intent);
                 break;
             case R.id.setting_Txt:
@@ -439,8 +414,13 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
                 startActivity(intent1);
                 break;
             case R.id.cloud_Txt:
+                if (sdkProvider == SDK_PROVIDER_V1) {
+                    showNotSupportToast();
+                    return;
+                }
                 Intent intent2 = new Intent(CameraPanelActivity.this, CameraCloudStorageActivity.class);
                 intent2.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devId);
+                intent2.putExtra(CommonDeviceDebugPresenter.INTENT_SDK_POROVIDER, sdkProvider);
                 startActivity(intent2);
                 break;
             case R.id.message_center_Txt:
@@ -607,7 +587,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         if (null != mCameraP2P) {
             AudioUtils.getModel(this);
             mCameraP2P.registorOnP2PCameraListener(this);
-            mCameraP2P.generateCameraView(mVideoView);
+            mCameraP2P.generateCameraView(mVideoView.createdView());
             if (mCameraP2P.isConnecting()) {
                 mCameraP2P.startPreview(new OperationDelegateCallBack() {
                     @Override
@@ -617,7 +597,7 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
 
                     @Override
                     public void onFailure(int sessionId, int requestId, int errCode) {
-
+                        Log.d(TAG, "start preview onFailure, errCode: " + errCode);
                     }
                 });
             }
@@ -649,6 +629,9 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
             mCameraP2P.removeOnP2PCameraListener();
         }
         AudioUtils.changeToNomal(this);
+        if (mSmartCameraP2P != null) {
+            mSmartCameraP2P.destroyCameraBusiness();
+        }
     }
 
     @Override
@@ -696,5 +679,27 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
             pcm.get(pcmData, 0, length);
             mCameraP2P.sendAudioTalkData(pcmData,length);
         }
+    }
+
+    @Override
+    public void onCreated(Object view) {
+        if (null != mCameraP2P){
+            mCameraP2P.generateCameraView(view);
+        }
+    }
+
+    @Override
+    public void videoViewClick() {
+
+    }
+
+    @Override
+    public void startCameraMove(PTZDirection cameraDirection) {
+
+    }
+
+    @Override
+    public void onActionUP() {
+
     }
 }
