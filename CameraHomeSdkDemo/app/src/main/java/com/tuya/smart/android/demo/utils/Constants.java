@@ -56,6 +56,9 @@ public class Constants {
     public static final int MOTION_CLASSIFY_SUCCESS = 2051;
     public static final int MSG_DELETE_ALARM_DETECTION = 2052;
 
+    public static final int MSG_PLAYBACK_TOAST = 10000;
+
+
     public synchronized static boolean hasStoragePermission() {
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "a.log";
         try {
@@ -77,6 +80,7 @@ public class Constants {
         }
 
     }
+
     public synchronized static boolean requestPermission(Context context, String permission, int requestCode, String tip) {
         //判断当前Activity是否已经获得了该权限
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

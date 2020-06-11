@@ -100,35 +100,37 @@ public class DeviceBindModel extends BaseModel implements IDeviceBindModel {
     @Override
     public void setAP(String ssid, String password, String token) {
         mModelEnum = TY_AP;
-        mTuyaActivator = TuyaHomeSdk.getActivatorInstance().newActivator(new ActivatorBuilder()
-                .setSsid(ssid)
-                .setContext(mContext)
-                .setPassword(password)
-                .setActivatorModel(TY_AP)
-                .setTimeOut(CONFIG_TIME_OUT)
-                .setToken(token).setListener(new ITuyaSmartActivatorListener() {
-                    @Override
-                    public void onError(String error, String s1) {
-                        resultError(WHAT_AP_ACTIVE_ERROR, error, s1);
-                    }
+        mTuyaActivator = TuyaHomeSdk.getActivatorInstance().newActivator(
+                new ActivatorBuilder()
+                        .setSsid(ssid)
+                        .setContext(mContext)
+                        .setPassword(password)
+                        .setActivatorModel(TY_AP)
+                        .setTimeOut(CONFIG_TIME_OUT)
+                        .setToken(token)
+                        .setListener(new ITuyaSmartActivatorListener() {
+                            @Override
+                            public void onError(String error, String s1) {
+                                resultError(WHAT_AP_ACTIVE_ERROR, error, s1);
+                            }
 
-                    @Override
-                    public void onActiveSuccess(DeviceBean gwDevResp) {
-                        resultSuccess(WHAT_AP_ACTIVE_SUCCESS, gwDevResp);
-                    }
+                            @Override
+                            public void onActiveSuccess(DeviceBean gwDevResp) {
+                                resultSuccess(WHAT_AP_ACTIVE_SUCCESS, gwDevResp);
+                            }
 
-                    @Override
-                    public void onStep(String step, Object o) {
-                        switch (step) {
-                            case ActivatorAPStepCode.DEVICE_BIND_SUCCESS:
-                                resultSuccess(WHAT_BIND_DEVICE_SUCCESS, o);
-                                break;
-                            case ActivatorAPStepCode.DEVICE_FIND:
-                                resultSuccess(WHAT_DEVICE_FIND, o);
-                                break;
-                        }
-                    }
-                }));
+                            @Override
+                            public void onStep(String step, Object o) {
+                                switch (step) {
+                                    case ActivatorAPStepCode.DEVICE_BIND_SUCCESS:
+                                        resultSuccess(WHAT_BIND_DEVICE_SUCCESS, o);
+                                        break;
+                                    case ActivatorAPStepCode.DEVICE_FIND:
+                                        resultSuccess(WHAT_DEVICE_FIND, o);
+                                        break;
+                                }
+                            }
+                        }));
 
     }
 

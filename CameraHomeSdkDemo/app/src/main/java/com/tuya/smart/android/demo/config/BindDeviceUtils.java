@@ -2,7 +2,6 @@ package com.tuya.smart.android.demo.config;
 
 import android.text.TextUtils;
 
-import com.tuya.smart.android.demo.config.CommonConfig;
 import com.tuya.smart.android.device.utils.WiFiUtil;
 import com.tuya.smart.sdk.TuyaSdk;
 
@@ -12,7 +11,7 @@ import com.tuya.smart.sdk.TuyaSdk;
 public class BindDeviceUtils {
 
     public static boolean isAPMode() {
-        String ssid = "";
+        String ssid = "SL-";
         if (TextUtils.isEmpty(ssid)) {
             ssid = CommonConfig.DEFAULT_COMMON_AP_SSID;
         }

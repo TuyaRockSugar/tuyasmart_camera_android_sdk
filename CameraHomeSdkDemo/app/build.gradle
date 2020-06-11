@@ -90,13 +90,17 @@ dependencies {
 
     // tuya camera module
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
+//    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
 
     // support tutk
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h4'
+//    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h4'
+
+    implementation project(':ipc-camera-v2')
+    implementation project(':ipc-camera-v1')
+
 
     //消息中心图片解密组件
     implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'

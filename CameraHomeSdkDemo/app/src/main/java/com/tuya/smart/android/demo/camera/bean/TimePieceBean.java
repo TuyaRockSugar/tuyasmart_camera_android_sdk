@@ -11,11 +11,10 @@ public class TimePieceBean implements Comparable<TimePieceBean> {
     private int endTime;
     private int playTime;
     private int prefix;
+    private int type;
 
     public TimePieceBean() {
     }
-
-
 
     public long getStartTimeInMillisecond() {
         return startTime * 1000L;
@@ -61,7 +60,7 @@ public class TimePieceBean implements Comparable<TimePieceBean> {
     @Override
     public int compareTo(@NonNull TimePieceBean o) {
         //自定义比较方法，如果认为此实体本身大则返回1，否则返回-1
-        if(this.endTime >= o.getEndTime()){
+        if (this.endTime >= o.getEndTime()) {
             return 1;
         }
         return -1;
@@ -73,6 +72,15 @@ public class TimePieceBean implements Comparable<TimePieceBean> {
                 "starttime='" + startTime + '\'' +
                 "playTime='" + playTime + '\'' +
                 ", endtime='" + endTime + '\'' +
+                "type='" + type + '\'' +
                 '}';
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

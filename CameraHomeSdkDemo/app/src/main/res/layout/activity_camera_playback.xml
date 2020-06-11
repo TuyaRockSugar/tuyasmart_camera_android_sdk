@@ -23,8 +23,7 @@
         <com.tuya.smart.camera.middleware.widget.TuyaCameraView
             android:id="@+id/camera_video_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
 
         <ImageView
             android:id="@+id/camera_mute"
@@ -63,7 +62,6 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-
     <Button
         android:id="@+id/query_btn"
         android:layout_width="match_parent"
@@ -83,43 +81,167 @@
         android:layout_marginLeft="@dimen/mg_10"
         android:layout_marginRight="@dimen/mg_10" />
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:padding="@dimen/mg_10">
+        android:orientation="vertical">
 
         <Button
-            android:id="@+id/start_btn"
+            android:id="@+id/opera_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="start"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:layout_margin="@dimen/dp_10"
+            android:text="OPERA" />
 
-        <Button
-            android:id="@+id/pause_btn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/operaLl"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="pause"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_black_round"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <Button
-            android:id="@+id/resume_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="resume"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/mg_10">
 
-        <Button
-            android:id="@+id/stop_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="stop"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+                <Button
+                    android:id="@+id/start_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="start"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/pause_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="pause"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/resume_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="resume"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/stop_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="stop"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="5dp"
+                android:background="@color/white_60" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/mg_10">
+
+                <Button
+                    android:id="@+id/multi_playback_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1.0X 回放"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/multi_playback_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2.0X 回放"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/mg_10">
+
+                <Button
+                    android:id="@+id/start_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开始下载"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/stop_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="结束"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/pause_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="暂停"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/resume_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="恢复"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/mg_10">
+
+                <Button
+                    android:id="@+id/event_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/mg_10"
+                    android:text="选择的回放事件图片下载"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/delete_playback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:padding="@dimen/mg_10"
+                    android:text="删除回放数据"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
+
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.tuya.smart.android.demo.camera;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -15,25 +16,29 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.base.utils.MessageUtil;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
 import com.tuya.smart.android.demo.camera.bean.RecordInfoBean;
 import com.tuya.smart.android.demo.camera.bean.TimePieceBean;
+import com.tuya.smart.camera.camerasdk.TuyaCameraSDK;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
+import com.tuya.smart.camera.camerasdk.typlayer.callback.ProgressCallBack;
 import com.tuya.smart.camera.ipccamerasdk.bean.MonthDays;
-import com.tuya.smart.camera.ipccamerasdk.monitor.Monitor;
 import com.tuya.smart.camera.ipccamerasdk.p2p.ICameraP2P;
 import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
 import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
 import com.tuya.smart.camera.utils.AudioUtils;
 import com.tuyasmart.camera.devicecontrol.model.PTZDirection;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,6 +53,7 @@ import static com.tuya.smart.android.demo.utils.Constants.MSG_DATA_DATE;
 import static com.tuya.smart.android.demo.utils.Constants.MSG_DATA_DATE_BY_DAY_FAIL;
 import static com.tuya.smart.android.demo.utils.Constants.MSG_DATA_DATE_BY_DAY_SUCC;
 import static com.tuya.smart.android.demo.utils.Constants.MSG_MUTE;
+import static com.tuya.smart.android.demo.utils.Constants.MSG_PLAYBACK_TOAST;
 
 
 /**
@@ -62,6 +68,9 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
     private EditText dateInputEdt;
     private RecyclerView queryRv;
     private Button queryBtn, startBtn, pauseBtn, resumeBtn, stopBtn;
+    private Button operaBtn;
+    private LinearLayout operaLl;
+    private Button multiPlay1Btn, multiPlay2Btn, startDownloadBtn, stopDownloadBtn, pauseDownloadBtn, resumeDownloadBtn, eventDownloadBtn, deletePlaybackBtn;
 
     private ICameraP2P mCameraP2P;
     private static final int ASPECT_RATIO_WIDTH = 9;
@@ -70,6 +79,7 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
     private int queryDay;
     private CameraPlaybackTimeAdapter adapter;
     private List<TimePieceBean> queryDateList;
+    private TimePieceBean currentTimePieceBean;
 
     private boolean isPlayback = false;
 
@@ -93,6 +103,11 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
                 case MSG_DATA_DATE_BY_DAY_FAIL:
                     handleDataDay(msg);
                     break;
+                case MSG_PLAYBACK_TOAST:
+                    ToastUtil.shortToast(CameraPlaybackActivity.this, "" + msg.obj.toString());
+                    break;
+                default:
+                    break;
             }
             super.handleMessage(msg);
         }
@@ -100,7 +115,6 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
 
     private void handleDataDay(Message msg) {
         if (msg.arg1 == ARG1_OPERATE_SUCCESS) {
-            ;
             queryDateList.clear();
             //Timepieces with data for the query day
             List<TimePieceBean> timePieceBeans = mBackDataDayCache.get(mCameraP2P.getDayKey());
@@ -109,7 +123,6 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
             } else {
                 showErrorToast();
             }
-
             adapter.notifyDataSetChanged();
         } else {
 
@@ -121,7 +134,7 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
             List<String> days = mBackDataMonthCache.get(mCameraP2P.getMonthKey());
 
             try {
-                if (days.size() == 0) {
+                if (null == days || days.size() == 0) {
                     showErrorToast();
                     return;
                 }
@@ -150,15 +163,19 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
     }
 
     private void parsePlaybackData(Object obj) {
-        RecordInfoBean recordInfoBean = JSONObject.parseObject(obj.toString(), RecordInfoBean.class);
-        if (recordInfoBean.getCount() != 0) {
-            List<TimePieceBean> timePieceBeanList = recordInfoBean.getItems();
-            if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
-                mBackDataDayCache.put(mCameraP2P.getDayKey(), timePieceBeanList);
+        try {
+            RecordInfoBean recordInfoBean = JSONObject.parseObject(obj.toString(), RecordInfoBean.class);
+            if (recordInfoBean.getCount() != 0) {
+                List<TimePieceBean> timePieceBeanList = recordInfoBean.getItems();
+                if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
+                    mBackDataDayCache.put(mCameraP2P.getDayKey(), timePieceBeanList);
+                }
+                mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_SUCC, ARG1_OPERATE_SUCCESS));
+            } else {
+                mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_FAIL));
             }
-            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_SUCC, ARG1_OPERATE_SUCCESS));
-        } else {
-            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_FAIL));
+        } catch (Exception e) {
+            L.d(TAG, obj.toString());
         }
     }
 
@@ -169,7 +186,6 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
             ToastUtil.shortToast(CameraPlaybackActivity.this, "operation fail");
         }
     }
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -206,6 +222,18 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, height);
         layoutParams.addRule(RelativeLayout.BELOW, R.id.toolbar_view);
         findViewById(R.id.camera_video_view_Rl).setLayoutParams(layoutParams);
+
+        multiPlay1Btn = findViewById(R.id.multi_playback_1);
+        multiPlay2Btn = findViewById(R.id.multi_playback_2);
+        startDownloadBtn = findViewById(R.id.start_download);
+        stopDownloadBtn = findViewById(R.id.stop_download);
+        pauseDownloadBtn = findViewById(R.id.pause_download);
+        resumeDownloadBtn = findViewById(R.id.resume_download);
+        eventDownloadBtn = findViewById(R.id.event_download);
+        deletePlaybackBtn = findViewById(R.id.delete_playback);
+
+        operaBtn = findViewById(R.id.opera_btn);
+        operaLl = findViewById(R.id.operaLl);
     }
 
     private void initData() {
@@ -247,7 +275,7 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
         adapter.setListener(new CameraPlaybackTimeAdapter.OnTimeItemListener() {
             @Override
             public void onClick(TimePieceBean timePieceBean) {
-
+                currentTimePieceBean = timePieceBean;
                 mCameraP2P.startPlayBack(timePieceBean.getStartTime(),
                         timePieceBean.getEndTime(),
                         timePieceBean.getStartTime(), new OperationDelegateCallBack() {
@@ -273,6 +301,17 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
                         });
             }
         });
+
+        multiPlay1Btn.setOnClickListener(this);
+        multiPlay2Btn.setOnClickListener(this);
+        startDownloadBtn.setOnClickListener(this);
+        stopDownloadBtn.setOnClickListener(this);
+        pauseDownloadBtn.setOnClickListener(this);
+        resumeDownloadBtn.setOnClickListener(this);
+        eventDownloadBtn.setOnClickListener(this);
+        deletePlaybackBtn.setOnClickListener(this);
+
+        operaBtn.setOnClickListener(this);
     }
 
     @Override
@@ -295,6 +334,181 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
                 break;
             case R.id.stop_btn:
                 stopClick();
+                break;
+
+            case R.id.opera_btn:
+                operaLl.setVisibility(operaLl.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                break;
+
+            case R.id.multi_playback_1:
+                if (isPlayback) {
+                    mCameraP2P.setPlayBackSpeed(TuyaCameraSDK.TY_SPEED_10TIMES, new OperationDelegateCallBack() {
+                        @Override
+                        public void onSuccess(int sessionId, int requestId, String data) {
+
+                        }
+
+                        @Override
+                        public void onFailure(int sessionId, int requestId, int errCode) {
+
+                        }
+                    });
+                }
+                break;
+            case R.id.multi_playback_2:
+                if (isPlayback) {
+                    //回调可以不实现，下同
+                    mCameraP2P.setPlayBackSpeed(TuyaCameraSDK.TY_SPEED_20TIMES, null);
+                }
+                break;
+            case R.id.start_download:
+                if (null != queryDateList && queryDateList.size() > 0) {
+                    // 确认所选的时间片 在查询到的列表范围内，下载文件格式为mp4
+                    TimePieceBean timePieceBean = queryDateList.get(0);
+                    if (null != currentTimePieceBean) {
+                        timePieceBean = currentTimePieceBean;
+                    } else {
+                        ToastUtil.shortToast(this, "未选择片段，默认下载第一段");
+                    }
+                    final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camera/playback/";
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    final String fileName = System.currentTimeMillis() + ".mp4";
+                    mCameraP2P.startPlayBackDownload(timePieceBean.getStartTime(), timePieceBean.getEndTime(), path, fileName,
+                            new OperationDelegateCallBack() {
+                                @Override
+                                public void onSuccess(int sessionId, int requestId, String data) {
+                                    mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "start download success"));
+                                }
+
+                                @Override
+                                public void onFailure(int sessionId, int requestId, int errCode) {
+                                    mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "start download failed"));
+                                }
+                            }, new ProgressCallBack() {
+                                @Override
+                                public void onProgress(int sessionId, int requestId, int pos, Object camera) {
+                                    L.e(TAG, "download progress -" + pos);
+                                    mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, " download progress：" + pos + " %"));
+                                }
+                            }, new OperationDelegateCallBack() {
+
+                                @Override
+                                public void onSuccess(int sessionId, int requestId, String data) {
+                                    L.e(TAG, "download success ");
+                                    mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download finished success：" + path + fileName));
+                                }
+
+                                @Override
+                                public void onFailure(int sessionId, int requestId, int errCode) {
+                                    mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download finished failed"));
+                                }
+                            });
+                }
+                break;
+            case R.id.stop_download:
+                mCameraP2P.stopPlayBackDownload(new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download stop success"));
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download stop faileds"));
+                    }
+                });
+                break;
+            case R.id.pause_download:
+                mCameraP2P.pausePlayBackDownload(new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download pause success"));
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download pause failed"));
+                    }
+                });
+                break;
+            case R.id.resume_download:
+                mCameraP2P.resumePlayBackDownload(new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download resume success"));
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download resume failed"));
+                    }
+                });
+                break;
+            case R.id.event_download:
+                // 取当天事件中支持图片
+                // 这里只取第一张 下载文件格式为jpg
+                if (null != currentTimePieceBean) {
+                    if (currentTimePieceBean.getType() > 0) {
+
+                        final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camera/playback/";
+                        File file = new File(path);
+                        if (!file.exists()) {
+                            file.mkdirs();
+                        }
+                        final String fileName = System.currentTimeMillis() + ".jpg";
+                        mCameraP2P.downloadPlaybackEventImage(currentTimePieceBean.getStartTime(), currentTimePieceBean.getEndTime(), path, fileName, new OperationDelegateCallBack() {
+                            @Override
+                            public void onSuccess(int sessionId, int requestId, String data) {
+                                L.d(TAG, "download success");
+                                mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download 第一个事件图片 success：" + path + fileName));
+                            }
+
+                            @Override
+                            public void onFailure(int sessionId, int requestId, int errCode) {
+                                mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, "download 第一个事件图片 failed"));
+                            }
+                        });
+
+                    } else {
+                        ToastUtil.shortToast(this, "该片段没有图片");
+                    }
+                }
+                break;
+            case R.id.delete_playback:
+                // 注意 传日期格式 "20200608"
+                String inputStr = dateInputEdt.getText().toString().trim();
+                if (TextUtils.isEmpty(inputStr)) {
+                    return;
+                }
+                String date = inputStr;
+                if (inputStr.contains("/")) {
+                    date = inputStr.replaceAll("/", "");
+                }
+                mCameraP2P.deletePlaybackDataByDay(date, new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, " delete success"));
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, " delete failed"));
+                    }
+                }, new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        L.d(TAG, "delete success");
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, " delete  finished "));
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+                        mHandler.sendMessage(MessageUtil.getMessage(MSG_PLAYBACK_TOAST, " delete finished failed "));
+                    }
+                });
 
                 break;
             default:
@@ -503,4 +717,6 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
     public void onActionUP() {
 
     }
+
+
 }
