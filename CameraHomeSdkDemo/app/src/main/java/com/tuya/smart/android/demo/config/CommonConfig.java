@@ -17,4 +17,5 @@ public class CommonConfig {
 
     public static final String TY_ROUTER = "TY_ROUTER";
     public static final String DEFAULT_KEY_AP_SSID = "-TLinkAP-";
+    public static final String REALME_KEY_AP_SSID = "-SL-";
 }

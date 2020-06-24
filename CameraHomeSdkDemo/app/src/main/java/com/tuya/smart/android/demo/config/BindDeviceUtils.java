@@ -11,13 +11,14 @@ import com.tuya.smart.sdk.TuyaSdk;
 public class BindDeviceUtils {
 
     public static boolean isAPMode() {
-        String ssid = "SL-";
+        String ssid = "SL";
         if (TextUtils.isEmpty(ssid)) {
             ssid = CommonConfig.DEFAULT_COMMON_AP_SSID;
         }
         String currentSSID = WiFiUtil.getCurrentSSID(TuyaSdk.getApplication()).toLowerCase();
         return !TextUtils.isEmpty(currentSSID) && (currentSSID.startsWith(ssid.toLowerCase()) ||
                 currentSSID.startsWith(CommonConfig.DEFAULT_OLD_AP_SSID.toLowerCase()) ||
-                currentSSID.contains(CommonConfig.DEFAULT_KEY_AP_SSID.toLowerCase()));
+                currentSSID.contains(CommonConfig.DEFAULT_KEY_AP_SSID.toLowerCase())
+                || currentSSID.contains(CommonConfig.REALME_KEY_AP_SSID.toLowerCase()));
     }
 }
