@@ -99,7 +99,7 @@ For the instructions of AndroidStudio, please refer to: [AndroidStudio Guides](h
 
 ## Doc
 
-Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_camera_android_sdk_doc/en/)
+Refer to Details: [Tuya Smart Camera Android SDK Doc](https://tuyainc.github.io/tuyasmart_home_android_sdk_doc/en/resource/ipc/)
 
 ## Update log
 - 2020.5.20
