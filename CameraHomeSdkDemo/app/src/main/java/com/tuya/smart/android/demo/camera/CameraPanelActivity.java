@@ -280,11 +280,13 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
 
         muteImg.setSelected(true);
     }
-
+    
     private void initData() {
         localKey = getIntent().getStringExtra(INTENT_LOCALKEY);
         devId = getIntent().getStringExtra(INTENT_DEVID);
-        sdkProvider = getIntent().getIntExtra(INTENT_SDK_POROVIDER, -1);
+        // 拿到的是p2pType ，需要转化成 sdkProvider
+        int intentP2pType = getIntent().getIntExtra(INTENT_SDK_POROVIDER, -1);
+        sdkProvider = intentP2pType ==1 ? 1 : 2;
         mIsRunSoft = getIntent().getBooleanExtra("isRunsoft", true);
         mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(sdkProvider);
         mVideoView.setCameraViewCallback(this);
