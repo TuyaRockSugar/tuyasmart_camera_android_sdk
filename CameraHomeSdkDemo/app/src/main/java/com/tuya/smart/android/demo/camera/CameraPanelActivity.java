@@ -286,10 +286,10 @@ public class CameraPanelActivity extends AppCompatActivity implements OnP2PCamer
         devId = getIntent().getStringExtra(INTENT_DEVID);
         // 拿到的是p2pType ，需要转化成 sdkProvider
         int intentP2pType = getIntent().getIntExtra(INTENT_SDK_POROVIDER, -1);
-        sdkProvider = intentP2pType ==1 ? 1 : 2;
         mIsRunSoft = getIntent().getBooleanExtra("isRunsoft", true);
-        mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(sdkProvider);
+        mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(intentP2pType);
         mVideoView.setCameraViewCallback(this);
+        sdkProvider = intentP2pType ==1 ? 1 : 2;
         mVideoView.createVideoView(sdkProvider);
         if (null == mCameraP2P) {
             showNotSupportToast();
