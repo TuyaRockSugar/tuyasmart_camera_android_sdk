@@ -1,8 +1,9 @@
 package com.tuya.smart.android.demo.config;
 
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.zxing.WriterException;
+import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.common.utils.WiFiUtil;
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
@@ -65,13 +67,17 @@ public class QrCodeConfigActivity extends AppCompatActivity implements ITuyaSmar
 
             @Override
             public void onFailure(String s, String s1) {
-
+                L.e("QrCodeConfigActivity", s);
             }
         });
         mEtInputWifiSSid.setText(wifiSSId);
     }
 
     private void createQrcode() {
+        if (TextUtils.isEmpty(token)) {
+            Toast.makeText(this, "token is empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
         wifiPwd = mEtInputWifiPwd.getText().toString();
         TuyaCameraActivatorBuilder builder = new TuyaCameraActivatorBuilder()
                 .setToken(token).setPassword(wifiPwd).setSsid(wifiSSId).setListener(this);

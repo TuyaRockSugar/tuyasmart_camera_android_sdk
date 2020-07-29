@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.tuya.smart.android.common.utils.L;
 import com.tuya.smart.android.demo.R;
 import com.tuya.smart.android.demo.base.utils.MessageUtil;
 import com.tuya.smart.android.demo.base.utils.ToastUtil;
@@ -27,7 +28,6 @@ import com.tuya.smart.android.demo.camera.bean.TimePieceBean;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
 import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
 import com.tuya.smart.camera.ipccamerasdk.bean.MonthDays;
-import com.tuya.smart.camera.ipccamerasdk.monitor.Monitor;
 import com.tuya.smart.camera.ipccamerasdk.p2p.ICameraP2P;
 import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
 import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
@@ -100,7 +100,6 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
 
     private void handleDataDay(Message msg) {
         if (msg.arg1 == ARG1_OPERATE_SUCCESS) {
-            ;
             queryDateList.clear();
             //Timepieces with data for the query day
             List<TimePieceBean> timePieceBeans = mBackDataDayCache.get(mCameraP2P.getDayKey());
@@ -125,22 +124,25 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
                     showErrorToast();
                     return;
                 }
-                String inputStr = dateInputEdt.getText().toString();
-                String[] substring = inputStr.split("/");
-                int year = Integer.parseInt(substring[0]);
-                int mouth = Integer.parseInt(substring[1]);
-                int day = Integer.parseInt(substring[2]);
-                mCameraP2P.queryRecordTimeSliceByDay(year, mouth, day, new OperationDelegateCallBack() {
-                    @Override
-                    public void onSuccess(int sessionId, int requestId, String data) {
-                        parsePlaybackData(data);
-                    }
+                final String inputStr = dateInputEdt.getText().toString();
+                if (!TextUtils.isEmpty(inputStr) && inputStr.contains("/")) {
+                    String[] substring = inputStr.split("/");
+                    int year = Integer.parseInt(substring[0]);
+                    int mouth = Integer.parseInt(substring[1]);
+                    int day = Integer.parseInt(substring[2]);
+                    mCameraP2P.queryRecordTimeSliceByDay(year, mouth, day, new OperationDelegateCallBack() {
+                        @Override
+                        public void onSuccess(int sessionId, int requestId, String data) {
+                            L.e(TAG, inputStr + " --- " + data);
+                            parsePlaybackData(data);
+                        }
 
-                    @Override
-                    public void onFailure(int sessionId, int requestId, int errCode) {
-                        mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
-                    }
-                });
+                        @Override
+                        public void onFailure(int sessionId, int requestId, int errCode) {
+                            mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
+                        }
+                    });
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -393,6 +395,8 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
                         public void onSuccess(int sessionId, int requestId, String data) {
                             MonthDays monthDays = JSONObject.parseObject(data, MonthDays.class);
                             mBackDataMonthCache.put(mCameraP2P.getMonthKey(), monthDays.getDataDays());
+                            L.e(TAG,   "MonthDays --- " + data);
+
                             mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE, ARG1_OPERATE_SUCCESS, data));
                         }
 
