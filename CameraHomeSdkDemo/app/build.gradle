@@ -89,17 +89,25 @@ dependencies {
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
     // tuya camera module
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
+//    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
+//    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
+//    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
 
-    // support tutk
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h4'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.19.0r147-topsee-beta'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.19.0r147-topsee-beta'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.19.0r147-topsee-beta'
+
+//    implementation project(':ipc-camera-v2')
+//    implementation project(':ipc-camera-utils')
+//    implementation project(':ipc-camera-middleware')
+
+    // support tutk  3.19.0不在兼容tutk
+//    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v1:3.17.0r139h4'
 
     //消息中心图片解密组件
-    implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:0.0.1'
+    implementation 'com.tuya.smart:tuyasmart-imagepipeline-okhttp3:3.11.0r117'
     implementation 'com.facebook.fresco:fresco:1.3.0'
 
     implementation 'com.tuya.smart:tuyasmart:3.17.0-beta1'

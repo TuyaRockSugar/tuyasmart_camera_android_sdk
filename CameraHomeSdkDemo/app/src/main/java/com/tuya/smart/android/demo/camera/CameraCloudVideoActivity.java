@@ -136,4 +136,9 @@ public class CameraCloudVideoActivity extends AppCompatActivity implements OnP2P
     public void onReceiveSpeakerEchoData(ByteBuffer byteBuffer, int i) {
 
     }
+
+    @Override
+    public void onReceiveAudioBufferData(int nSampleRate, int nChannelNum, int nBitWidth, long nTimeStamp, long progress, long duration) {
+
+    }
 }

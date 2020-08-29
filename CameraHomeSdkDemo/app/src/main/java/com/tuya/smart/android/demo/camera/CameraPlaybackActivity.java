@@ -489,6 +489,11 @@ public class CameraPlaybackActivity extends AppCompatActivity implements OnP2PCa
     }
 
     @Override
+    public void onReceiveAudioBufferData(int nSampleRate, int nChannelNum, int nBitWidth, long nTimeStamp, long progress, long duration) {
+
+    }
+
+    @Override
     public void onCreated(Object o) {
         mCameraP2P.generateCameraView(mVideoView.createdView());
     }

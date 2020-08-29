@@ -263,6 +263,11 @@ public class CameraCloudStorageActivity extends AppCompatActivity implements OnP
     }
 
     @Override
+    public void onReceiveAudioBufferData(int nSampleRate, int nChannelNum, int nBitWidth, long nTimeStamp, long progress, long duration) {
+
+    }
+
+    @Override
     public void getCloudDayList(List<CloudDayBean> cloudDayBeanList) {
         //获取云存储有数据的日期
         dayBeanList.clear();
