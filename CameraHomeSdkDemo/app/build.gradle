@@ -90,7 +90,7 @@ dependencies {
 
     // tuya camera module
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h3'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
