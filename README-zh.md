@@ -74,11 +74,11 @@ dependencies {
     // implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
 
     // required tuya home sdk
-    implementation 'com.tuya.smart:tuyasmart:3.17.0-beta1'
+    implementation 'com.tuya.smart:tuyasmart:3.17.8'
 
     // tuya camera module
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-middleware:3.17.0r139h1'
-    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h1'
+    implementation 'com.tuya.smart:tuyasmart-ipc-camera-v2:3.17.0r139h3'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-utils:3.13.0r129h1'
     implementation 'com.tuya.smart:tuyasmart-ipc-camera-message:3.13.0r128'
     implementation 'com.tuya.smart:tuyasmart-ipc-devicecontrol:3.17.0r139'
@@ -107,6 +107,8 @@ AndroidStudio的使用请参考: [AndroidStudio Guides](https://developer.androi
 更多请参考: [涂鸦智能摄像机 Android SDK使用说明](https://tuyainc.github.io/tuyasmart_home_android_sdk_doc/zh-hans/resource/ipc/)
 
 ## 更新日志
+- 2020.9.23
+   - 更新sdk，解决某些设备回放会跳帧问题
 - 2020.5.20
    - 更新 sdk，使用新的播放器用于支持老设备（tutk）
    - 更新优化 demo
